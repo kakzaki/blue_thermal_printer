@@ -1,14 +1,33 @@
 # blue_thermal_printer
 
-A new Flutter plugin for connecting to thermal printer vie bluetooth
+A new Flutter plugin for connecting to thermal printer via bluetooth
+(Android Only),
+this plugin is still under development
 
 ## Getting Started
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+1. Depend on it
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Add this to your package's pubspec.yaml file:
+
+
+dependencies:
+  blue_thermal_printer: ^0.0.1
+
+2. Install it
+
+You can install packages from the command line:
+
+with Flutter:
+
+
+$ flutter packages get
+
+Alternatively, your editor might support flutter packages get. Check the docs for your editor to learn more.
+3. Import it
+
+Now in your Dart code, you can use:
+
+
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+  
