@@ -13,7 +13,7 @@ this plugin is still under development
 Add this to your package's pubspec.yaml file:
 
     dependencies:
-      blue_thermal_printer: ^0.0.1
+      blue_thermal_printer: ^1.0.1
 
 2. Install it
 
