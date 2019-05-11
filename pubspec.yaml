@@ -1,6 +1,6 @@
 name: blue_thermal_printer
-description: A new Flutter plugin for connecting to thermal printer vie bluetooth
-version: 0.0.1
+description: A new Flutter plugin for connecting to thermal printer via bluetooth
+version: 1.0.0
 author: Zaki Mubarok <kakzaki@gmail.com>
 homepage: https://github.com/kakzaki/blue_thermal_printer
 

@@ -32,6 +32,7 @@ class _MyAppState extends State<MyApp> {
 
   initSavetoPath()async{
     //read and write
+    //image max 300px X 300px
     final filename = 'yourlogo.png';
     var bytes = await rootBundle.load("assets/images/yourlogo.png");
     String dir = (await getApplicationDocumentsDirectory()).path;
@@ -178,7 +179,7 @@ class _MyAppState extends State<MyApp> {
     // 1- only bold text
     // 2- bold with medium text
     // 3- bold with large text
-    //SIZE
+    //ALIGN
     // 0- ESC_ALIGN_LEFT
     // 1- ESC_ALIGN_CENTER
     // 2- ESC_ALIGN_RIGHT
@@ -193,6 +194,7 @@ class _MyAppState extends State<MyApp> {
         bluetooth.printNewLine();
         bluetooth.printCustom("Terimakasih",2,1);
         bluetooth.printNewLine();
+        bluetooth.printQRcode("Insert Your Own Text to Generate");
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.paperCut();

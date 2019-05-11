@@ -40,6 +40,12 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
 
 public class BlueThermalPrinterPlugin implements MethodCallHandler,
         RequestPermissionsResultListener {
@@ -185,11 +191,20 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
         break;
 
       case "printImage":
-        if (arguments.containsKey("image")) {
-          String image = (String) arguments.get("image");
-          printImage(result, image);
+        if (arguments.containsKey("pathImage")) {
+          String pathImage = (String) arguments.get("pathImage");
+          printImage(result, pathImage);
         } else {
-          result.error("invalid_argument", "argument 'message' not found", null);
+          result.error("invalid_argument", "argument 'pathImage' not found", null);
+        }
+        break;
+
+      case "printQRcode":
+        if (arguments.containsKey("textToQR")) {
+          String textToQR = (String) arguments.get("textToQR");
+          printQRcode(result, textToQR);
+        } else {
+          result.error("invalid_argument", "argument 'textToQR' not found", null);
         }
         break;
 
@@ -428,14 +443,38 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-  private void printImage(Result result,String img) {
+  private void printImage(Result result,String pathImage) {
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
 
     try {
-      Bitmap bmp = BitmapFactory.decodeFile(img);
+      Bitmap bmp = BitmapFactory.decodeFile(pathImage);
+      if(bmp!=null){
+        byte[] command = Utils.decodeBitmap(bmp);
+        THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+        THREAD.write(command);
+      }else{
+        Log.e("Print Photo error", "the file isn't exists");
+      }
+      result.success(true);
+    } catch (Exception ex) {
+      Log.e(TAG, ex.getMessage(), ex);
+      result.error("write_error", ex.getMessage(), exceptionToString(ex));
+    }
+  }
+
+  private void printQRcode(Result result,String textToQR) {
+    MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+    if (THREAD == null) {
+      result.error("write_error", "not connected", null);
+      return;
+    }
+    try {
+      BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE,300,300);
+      BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+      Bitmap bmp = barcodeEncoder.createBitmap(bitMatrix);
       if(bmp!=null){
         byte[] command = Utils.decodeBitmap(bmp);
         THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);

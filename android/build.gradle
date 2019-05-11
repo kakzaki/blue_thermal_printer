@@ -36,6 +36,8 @@ android {
     }
     dependencies {
         implementation 'com.android.support:support-compat:27.1.1'
+        implementation 'com.google.zxing:core:3.3.3'
+        implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
     }
     buildToolsVersion '28.0.3'
 }
