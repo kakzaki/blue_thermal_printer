@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Add Endline in QRCODE
+
 ## 1.0.1
 
 * Add Doc.

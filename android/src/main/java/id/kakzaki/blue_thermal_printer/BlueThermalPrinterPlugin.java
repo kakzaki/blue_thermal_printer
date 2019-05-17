@@ -455,6 +455,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
         byte[] command = Utils.decodeBitmap(bmp);
         THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
         THREAD.write(command);
+        THREAD.write(PrinterCommands.FEED_LINE);
       }else{
         Log.e("Print Photo error", "the file isn't exists");
       }
@@ -479,6 +480,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
         byte[] command = Utils.decodeBitmap(bmp);
         THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
         THREAD.write(command);
+        THREAD.write(PrinterCommands.FEED_LINE);
       }else{
         Log.e("Print Photo error", "the file isn't exists");
       }
