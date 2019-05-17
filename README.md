@@ -5,7 +5,7 @@ https://pub.dev/packages/blue_thermal_printer
 A new Flutter plugin for connecting to thermal printer via bluetooth
 (Android Only),
 this plugin is still under development
-Note: Migrate your project to Android X
+Note: Migrate your project to AndroidX
 
 ## Getting Started
 
@@ -14,7 +14,7 @@ Note: Migrate your project to Android X
 Add this to your package's pubspec.yaml file:
 
     dependencies:
-      blue_thermal_printer: ^1.0.1
+      blue_thermal_printer: ^any
 
 2. Install it
 

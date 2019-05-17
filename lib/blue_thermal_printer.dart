@@ -85,6 +85,9 @@ class BlueThermalPrinter {
 
   Future<dynamic> printQRcode(String textToQR) =>
       _channel.invokeMethod('printQRcode', {'textToQR': textToQR});
+
+  Future<dynamic> printLeftRight(String string1,String string2) =>
+      _channel.invokeMethod('printLeftRight', {'string1': string1, 'string2': string2});
 }
 
 

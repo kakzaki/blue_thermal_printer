@@ -207,7 +207,15 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
           result.error("invalid_argument", "argument 'textToQR' not found", null);
         }
         break;
-
+      case "printLeftRight":
+        if (arguments.containsKey("string1")) {
+          String string1 = (String) arguments.get("string1");
+          String string2 = (String) arguments.get("string2");
+          printLeftRight(result, string1,string2);
+        } else {
+          result.error("invalid_argument", "argument 'message' not found", null);
+        }
+        break;
       default:
         result.notImplemented();
         break;
@@ -413,12 +421,31 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
+  private void printLeftRight(Result result,String msg1, String msg2) {
+    if (THREAD == null) {
+      result.error("write_error", "not connected", null);
+      return;
+    }
+    try {
+      String ans = msg1 +msg2;
+      if(ans.length() <31){
+        int n = (31 - msg1.length() + msg2.length());
+        ans = msg1 + new String(new char[n]).replace("\0", " ") + msg2;
+      }
+      THREAD.write(ans.getBytes());
+      result.success(true);
+    } catch (Exception ex) {
+      Log.e(TAG, ex.getMessage(), ex);
+      result.error("write_error", ex.getMessage(), exceptionToString(ex));
+    }
+
+  }
+
   private void printNewLine(Result result) {
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
-
     try {
       THREAD.write(PrinterCommands.FEED_LINE);
       result.success(true);
@@ -433,7 +460,6 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       result.error("write_error", "not connected", null);
       return;
     }
-
     try {
       THREAD.write(PrinterCommands.FEED_PAPER_AND_CUT);
       result.success(true);
@@ -448,14 +474,14 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       result.error("write_error", "not connected", null);
       return;
     }
-
     try {
       Bitmap bmp = BitmapFactory.decodeFile(pathImage);
       if(bmp!=null){
         byte[] command = Utils.decodeBitmap(bmp);
-        THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+        THREAD.write(PrinterCommands.ESC_HORIZONTAL_CENTERS);
         THREAD.write(command);
         THREAD.write(PrinterCommands.FEED_LINE);
+        THREAD.write(PrinterCommands.ESC_CANCLE_HORIZONTAL_CENTERS);
       }else{
         Log.e("Print Photo error", "the file isn't exists");
       }
@@ -478,9 +504,10 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       Bitmap bmp = barcodeEncoder.createBitmap(bitMatrix);
       if(bmp!=null){
         byte[] command = Utils.decodeBitmap(bmp);
-        THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+        THREAD.write(PrinterCommands.ESC_HORIZONTAL_CENTERS);
         THREAD.write(command);
         THREAD.write(PrinterCommands.FEED_LINE);
+        THREAD.write(PrinterCommands.ESC_CANCLE_HORIZONTAL_CENTERS);
       }else{
         Log.e("Print Photo error", "the file isn't exists");
       }
@@ -491,9 +518,6 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-  /**
-   *
-   */
   private class ConnectedThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final InputStream inputStream;
@@ -510,7 +534,6 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       } catch (IOException e) {
         e.printStackTrace();
       }
-
       inputStream = tmpIn;
       outputStream = tmpOut;
     }
@@ -518,7 +541,6 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     public void run() {
       byte[] buffer = new byte[1024];
       int bytes;
-
       while (true) {
         try {
           bytes = inputStream.read(buffer);
@@ -553,9 +575,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-  /**
-   *
-   */
+
   private final StreamHandler stateStreamHandler = new StreamHandler() {
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -597,9 +617,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   };
 
-  /**
-   *
-   */
+
   private final StreamHandler readResultsHandler = new StreamHandler() {
     @Override
     public void onListen(Object o, EventSink eventSink) {
