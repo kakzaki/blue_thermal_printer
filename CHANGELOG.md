@@ -1,3 +1,7 @@
+## 1.0.6
+
+* add size to printleftright
+
 ## 1.0.5
 
 * fix bug

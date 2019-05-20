@@ -213,7 +213,8 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
         if (arguments.containsKey("string1")) {
           String string1 = (String) arguments.get("string1");
           String string2 = (String) arguments.get("string2");
-          printLeftRight(result, string1,string2);
+          int size=(int) arguments.get("size");
+          printLeftRight(result, string1,string2,size);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
         }
@@ -423,19 +424,34 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-  private void printLeftRight(Result result,String msg1, String msg2) {
+  private void printLeftRight(Result result,String msg1, String msg2, int size) {
+    byte[] cc = new byte[]{0x1B,0x21,0x03};  // 0- normal size text
+    //byte[] cc1 = new byte[]{0x1B,0x21,0x00};  // 0- normal size text
+    byte[] bb = new byte[]{0x1B,0x21,0x08};  // 1- only bold text
+    byte[] bb2 = new byte[]{0x1B,0x21,0x20}; // 2- bold with medium text
+    byte[] bb3 = new byte[]{0x1B,0x21,0x10}; // 3- bold with large text
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
     try {
-//      String ans = msg1 +msg2;
-//      if(ans.length() <31){
-//        int n = (31 - msg1.length() + msg2.length());
-//        ans = msg1 + new String(new char[n]).replace("\0", " ") + msg2;
-//      }
+      switch (size){
+        case 0:
+          THREAD.write(cc);
+          break;
+        case 1:
+          THREAD.write(bb);
+          break;
+        case 2:
+          THREAD.write(bb2);
+          break;
+        case 3:
+          THREAD.write(bb3);
+          break;
+      }
+      THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
       String line = String
-              .format("%-15s %16s %n", msg1, msg2);
+              .format("%-15s %15s %n", msg1, msg2);
       THREAD.write(line.getBytes());
       result.success(true);
     } catch (Exception ex) {

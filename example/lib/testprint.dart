@@ -19,8 +19,10 @@ class TestPrint {
         bluetooth.printNewLine();
         bluetooth.printImage(pathImage);
         bluetooth.printNewLine();
-        bluetooth.printLeftRight("Kiri123456", "Kanan1234567");
+        bluetooth.printLeftRight("Kiri123456", "Kanan1234567",0);
+        bluetooth.printLeftRight("Kiri123456", "Kanan1234567",1);
         bluetooth.printNewLine();
+        bluetooth.printLeftRight("Kiri123456", "Kanan1234567",2);
         bluetooth.printCustom("Body left",1,0);
         bluetooth.printCustom("Body right",0,2);
         bluetooth.printNewLine();
