@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:blue_thermal_printer_example/testprint.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
@@ -22,12 +23,14 @@ class _MyAppState extends State<MyApp> {
   bool _connected = false;
   bool _pressed = false;
   String pathImage;
+  TestPrint testPrint;
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
     initSavetoPath();
+    testPrint= TestPrint();
   }
 
   initSavetoPath()async{
@@ -115,7 +118,9 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
                 child:  RaisedButton(
-                  onPressed: _connected ? _tesPrint : null,
+                  onPressed:(){
+                    testPrint.sample();
+                  },
                   child: Text('TesPrint'),
                 ),
               ),
@@ -173,34 +178,34 @@ class _MyAppState extends State<MyApp> {
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 
-  void _tesPrint() async {
-    //SIZE
-    // 0- normal size text
-    // 1- only bold text
-    // 2- bold with medium text
-    // 3- bold with large text
-    //ALIGN
-    // 0- ESC_ALIGN_LEFT
-    // 1- ESC_ALIGN_CENTER
-    // 2- ESC_ALIGN_RIGHT
-    bluetooth.isConnected.then((isConnected) {
-      if (isConnected) {
-        bluetooth.printCustom("HEADER",3,1);
-        bluetooth.printNewLine();
-        bluetooth.printImage(pathImage);
-        bluetooth.printNewLine();
-        bluetooth.printCustom("Body left",1,0);
-        bluetooth.printCustom("Body right",0,2);
-        bluetooth.printNewLine();
-        bluetooth.printCustom("Terimakasih",2,1);
-        bluetooth.printNewLine();
-        bluetooth.printQRcode("Insert Your Own Text to Generate");
-        bluetooth.printNewLine();
-        bluetooth.printNewLine();
-        bluetooth.paperCut();
-      }
-    });
-  }
+//  void _tesPrint() async {
+//    //SIZE
+//    // 0- normal size text
+//    // 1- only bold text
+//    // 2- bold with medium text
+//    // 3- bold with large text
+//    //ALIGN
+//    // 0- ESC_ALIGN_LEFT
+//    // 1- ESC_ALIGN_CENTER
+//    // 2- ESC_ALIGN_RIGHT
+//    bluetooth.isConnected.then((isConnected) {
+//      if (isConnected) {
+//        bluetooth.printCustom("HEADER",3,1);
+//        bluetooth.printNewLine();
+//        bluetooth.printImage(pathImage);
+//        bluetooth.printNewLine();
+//        bluetooth.printCustom("Body left",1,0);
+//        bluetooth.printCustom("Body right",0,2);
+//        bluetooth.printNewLine();
+//        bluetooth.printCustom("Terimakasih",2,1);
+//        bluetooth.printNewLine();
+//        bluetooth.printQRcode("Insert Your Own Text to Generate");
+//        bluetooth.printNewLine();
+//        bluetooth.printNewLine();
+//        bluetooth.paperCut();
+//      }
+//    });
+//  }
 
 
   Future show(

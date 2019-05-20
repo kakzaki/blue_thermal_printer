@@ -19,11 +19,13 @@ import android.util.Log;
 import android.os.AsyncTask;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -427,12 +429,15 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       return;
     }
     try {
-      String ans = msg1 +msg2;
-      if(ans.length() <31){
-        int n = (31 - msg1.length() + msg2.length());
-        ans = msg1 + new String(new char[n]).replace("\0", " ") + msg2;
-      }
-      THREAD.write(ans.getBytes());
+//      String ans = msg1 +msg2;
+//      if(ans.length() <31){
+//        int n = (31 - msg1.length() + msg2.length());
+//        ans = msg1 + new String(new char[n]).replace("\0", " ") + msg2;
+//      }
+      String line = String
+              .format("%-15s %16s %n", msg1, msg2);
+      THREAD.write(line.getBytes());
+      THREAD.write(PrinterCommands.FEED_LINE);
       result.success(true);
     } catch (Exception ex) {
       Log.e(TAG, ex.getMessage(), ex);
@@ -478,10 +483,8 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       Bitmap bmp = BitmapFactory.decodeFile(pathImage);
       if(bmp!=null){
         byte[] command = Utils.decodeBitmap(bmp);
-        THREAD.write(PrinterCommands.ESC_HORIZONTAL_CENTERS);
+        THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
         THREAD.write(command);
-        THREAD.write(PrinterCommands.FEED_LINE);
-        THREAD.write(PrinterCommands.ESC_CANCLE_HORIZONTAL_CENTERS);
       }else{
         Log.e("Print Photo error", "the file isn't exists");
       }
@@ -499,15 +502,14 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       return;
     }
     try {
-      BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE,300,300);
+      BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE,250,250);
       BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
       Bitmap bmp = barcodeEncoder.createBitmap(bitMatrix);
+
       if(bmp!=null){
         byte[] command = Utils.decodeBitmap(bmp);
-        THREAD.write(PrinterCommands.ESC_HORIZONTAL_CENTERS);
+        THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
         THREAD.write(command);
-        THREAD.write(PrinterCommands.FEED_LINE);
-        THREAD.write(PrinterCommands.ESC_CANCLE_HORIZONTAL_CENTERS);
       }else{
         Log.e("Print Photo error", "the file isn't exists");
       }
