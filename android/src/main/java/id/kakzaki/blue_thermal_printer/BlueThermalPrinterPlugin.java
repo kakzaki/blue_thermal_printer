@@ -437,7 +437,6 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       String line = String
               .format("%-15s %16s %n", msg1, msg2);
       THREAD.write(line.getBytes());
-      THREAD.write(PrinterCommands.FEED_LINE);
       result.success(true);
     } catch (Exception ex) {
       Log.e(TAG, ex.getMessage(), ex);

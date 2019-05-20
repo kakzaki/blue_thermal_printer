@@ -1,3 +1,11 @@
+## 1.0.5
+
+* fix bug
+
+## 1.0.4
+
+* fix bug
+
 ## 1.0.3
 
 * Add print left + right
