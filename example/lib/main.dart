@@ -119,7 +119,7 @@ class _MyAppState extends State<MyApp> {
                 padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
                 child:  RaisedButton(
                   onPressed:(){
-                    testPrint.sample();
+                    testPrint.sample(pathImage);
                   },
                   child: Text('TesPrint'),
                 ),
@@ -178,6 +178,7 @@ class _MyAppState extends State<MyApp> {
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 
+// testprint move to different class
 //  void _tesPrint() async {
 //    //SIZE
 //    // 0- normal size text
@@ -206,8 +207,7 @@ class _MyAppState extends State<MyApp> {
 //      }
 //    });
 //  }
-
-
+  
   Future show(
       String message, {
         Duration duration: const Duration(seconds: 3),
