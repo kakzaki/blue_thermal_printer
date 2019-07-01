@@ -225,6 +225,10 @@ EXAMPLE:
             bluetooth.printNewLine();
             bluetooth.printImage(pathImage);
             bluetooth.printNewLine();
+            bluetooth.printLeftRight("LEFT", "RIGHT",0);
+            bluetooth.printLeftRight("LEFT", "RIGHT",1);
+            bluetooth.printNewLine();
+            bluetooth.printLeftRight("LEFT", "RIGHT",2);
             bluetooth.printCustom("Body left",1,0);
             bluetooth.printCustom("Body right",0,2);
             bluetooth.printNewLine();
