@@ -1,5 +1,9 @@
 ## 1.0.6
 
+* change documentation
+
+## 1.0.6
+
 * add size to printleftright
 
 ## 1.0.5
