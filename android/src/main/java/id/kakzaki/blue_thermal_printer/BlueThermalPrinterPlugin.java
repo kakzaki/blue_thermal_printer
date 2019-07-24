@@ -17,7 +17,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.os.AsyncTask;
-
+import android.os.Handler;
+import android.os.Looper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,9 +49,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-
-public class BlueThermalPrinterPlugin implements MethodCallHandler,
-        RequestPermissionsResultListener {
+public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermissionsResultListener {
 
   private static final String TAG = "BThermalPrinterPlugin";
   private static final String NAMESPACE = "blue_thermal_printer";
@@ -84,8 +83,51 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     readChannel.setStreamHandler(readResultsHandler);
   }
 
+  // MethodChannel.Result wrapper that responds on the platform thread.
+  private static class MethodResultWrapper implements Result {
+    private Result methodResult;
+    private Handler handler;
+
+    MethodResultWrapper(Result result) {
+      methodResult = result;
+      handler = new Handler(Looper.getMainLooper());
+    }
+
+    @Override
+    public void success(final Object result) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          methodResult.success(result);
+        }
+      });
+    }
+
+    @Override
+    public void error(final String errorCode, final String errorMessage, final Object errorDetails) {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          methodResult.error(errorCode, errorMessage, errorDetails);
+        }
+      });
+    }
+
+    @Override
+    public void notImplemented() {
+      handler.post(new Runnable() {
+        @Override
+        public void run() {
+          methodResult.notImplemented();
+        }
+      });
+    }
+  }
+
   @Override
-  public void onMethodCall(MethodCall call, Result result) {
+  public void onMethodCall(MethodCall call, Result rawResult) {
+    Result result = new MethodResultWrapper(rawResult);
+
     if (mBluetoothAdapter == null && !"isAvailable".equals(call.method)) {
       result.error("bluetooth_unavailable", "the device does not have bluetooth", null);
       return;
@@ -113,8 +155,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
         break;
 
       case "openSettings":
-        ContextCompat.startActivity(registrar.activity(),
-                new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS),
+        ContextCompat.startActivity(registrar.activity(), new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS),
                 null);
         result.success(true);
         break;
@@ -123,12 +164,10 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
         try {
 
           if (ContextCompat.checkSelfPermission(registrar.activity(),
-                  Manifest.permission.ACCESS_COARSE_LOCATION)
-                  != PackageManager.PERMISSION_GRANTED) {
+                  Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(registrar.activity(),
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_COARSE_LOCATION_PERMISSIONS);
+                    new String[] { Manifest.permission.ACCESS_COARSE_LOCATION }, REQUEST_COARSE_LOCATION_PERMISSIONS);
 
             pendingResult = result;
             break;
@@ -176,20 +215,20 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       case "printCustom":
         if (arguments.containsKey("message")) {
           String message = (String) arguments.get("message");
-          int size=(int) arguments.get("size");
-          int align=(int) arguments.get("align");
-          printCustom(result, message,size,align);
+          int size = (int) arguments.get("size");
+          int align = (int) arguments.get("align");
+          printCustom(result, message, size, align);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
         }
         break;
 
       case "printNewLine":
-          printNewLine(result);
+        printNewLine(result);
         break;
 
       case "paperCut":
-          paperCut(result);
+        paperCut(result);
         break;
 
       case "printImage":
@@ -213,8 +252,8 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
         if (arguments.containsKey("string1")) {
           String string1 = (String) arguments.get("string1");
           String string2 = (String) arguments.get("string2");
-          int size=(int) arguments.get("size");
-          printLeftRight(result, string1,string2,size);
+          int size = (int) arguments.get("size");
+          printLeftRight(result, string1, string2, size);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
         }
@@ -232,15 +271,13 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
    * @return boolean
    */
   @Override
-  public boolean onRequestPermissionsResult(int requestCode, String[] permissions,
-                                            int[] grantResults) {
+  public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
     if (requestCode == REQUEST_COARSE_LOCATION_PERMISSIONS) {
       if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
         getBondedDevices(pendingResult);
       } else {
-        pendingResult.error("no_permissions",
-                "this plugin requires location permissions for scanning", null);
+        pendingResult.error("no_permissions", "this plugin requires location permissions for scanning", null);
         pendingResult = null;
       }
       return true;
@@ -307,7 +344,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
           THREAD = new ConnectedThread(socket);
           THREAD.start();
           result.success(true);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
           Log.e(TAG, ex.getMessage(), ex);
           result.error("connect_error", ex.getMessage(), exceptionToString(ex));
         }
@@ -374,19 +411,19 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
   }
 
   private void printCustom(Result result, String message, int size, int align) {
-    //Print config "mode"
-    byte[] cc = new byte[]{0x1B,0x21,0x03};  // 0- normal size text
-    //byte[] cc1 = new byte[]{0x1B,0x21,0x00};  // 0- normal size text
-    byte[] bb = new byte[]{0x1B,0x21,0x08};  // 1- only bold text
-    byte[] bb2 = new byte[]{0x1B,0x21,0x20}; // 2- bold with medium text
-    byte[] bb3 = new byte[]{0x1B,0x21,0x10}; // 3- bold with large text
+    // Print config "mode"
+    byte[] cc = new byte[] { 0x1B, 0x21, 0x03 }; // 0- normal size text
+    // byte[] cc1 = new byte[]{0x1B,0x21,0x00}; // 0- normal size text
+    byte[] bb = new byte[] { 0x1B, 0x21, 0x08 }; // 1- only bold text
+    byte[] bb2 = new byte[] { 0x1B, 0x21, 0x20 }; // 2- bold with medium text
+    byte[] bb3 = new byte[] { 0x1B, 0x21, 0x10 }; // 3- bold with large text
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
 
     try {
-      switch (size){
+      switch (size) {
         case 0:
           THREAD.write(cc);
           break;
@@ -401,17 +438,17 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
           break;
       }
 
-      switch (align){
+      switch (align) {
         case 0:
-          //left align
+          // left align
           THREAD.write(PrinterCommands.ESC_ALIGN_LEFT);
           break;
         case 1:
-          //center align
+          // center align
           THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
           break;
         case 2:
-          //right align
+          // right align
           THREAD.write(PrinterCommands.ESC_ALIGN_RIGHT);
           break;
       }
@@ -424,18 +461,18 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-  private void printLeftRight(Result result,String msg1, String msg2, int size) {
-    byte[] cc = new byte[]{0x1B,0x21,0x03};  // 0- normal size text
-    //byte[] cc1 = new byte[]{0x1B,0x21,0x00};  // 0- normal size text
-    byte[] bb = new byte[]{0x1B,0x21,0x08};  // 1- only bold text
-    byte[] bb2 = new byte[]{0x1B,0x21,0x20}; // 2- bold with medium text
-    byte[] bb3 = new byte[]{0x1B,0x21,0x10}; // 3- bold with large text
+  private void printLeftRight(Result result, String msg1, String msg2, int size) {
+    byte[] cc = new byte[] { 0x1B, 0x21, 0x03 }; // 0- normal size text
+    // byte[] cc1 = new byte[]{0x1B,0x21,0x00}; // 0- normal size text
+    byte[] bb = new byte[] { 0x1B, 0x21, 0x08 }; // 1- only bold text
+    byte[] bb2 = new byte[] { 0x1B, 0x21, 0x20 }; // 2- bold with medium text
+    byte[] bb3 = new byte[] { 0x1B, 0x21, 0x10 }; // 3- bold with large text
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
     try {
-      switch (size){
+      switch (size) {
         case 0:
           THREAD.write(cc);
           break;
@@ -450,8 +487,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
           break;
       }
       THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
-      String line = String
-              .format("%-15s %15s %n", msg1, msg2);
+      String line = String.format("%-15s %15s %n", msg1, msg2);
       THREAD.write(line.getBytes());
       result.success(true);
     } catch (Exception ex) {
@@ -489,18 +525,18 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-  private void printImage(Result result,String pathImage) {
+  private void printImage(Result result, String pathImage) {
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
     try {
       Bitmap bmp = BitmapFactory.decodeFile(pathImage);
-      if(bmp!=null){
+      if (bmp != null) {
         byte[] command = Utils.decodeBitmap(bmp);
         THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
         THREAD.write(command);
-      }else{
+      } else {
         Log.e("Print Photo error", "the file isn't exists");
       }
       result.success(true);
@@ -510,22 +546,22 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-  private void printQRcode(Result result,String textToQR) {
+  private void printQRcode(Result result, String textToQR) {
     MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
     try {
-      BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE,250,250);
+      BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE, 250, 250);
       BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
       Bitmap bmp = barcodeEncoder.createBitmap(bitMatrix);
 
-      if(bmp!=null){
+      if (bmp != null) {
         byte[] command = Utils.decodeBitmap(bmp);
         THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
         THREAD.write(command);
-      }else{
+      } else {
         Log.e("Print Photo error", "the file isn't exists");
       }
       result.success(true);
@@ -592,7 +628,6 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     }
   }
 
-
   private final StreamHandler stateStreamHandler = new StreamHandler() {
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -617,14 +652,11 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
     @Override
     public void onListen(Object o, EventSink eventSink) {
       statusSink = eventSink;
-      registrar.activity().registerReceiver(mReceiver,
-              new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+      registrar.activity().registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
-      registrar.activeContext().registerReceiver(mReceiver,
-              new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED));
+      registrar.activeContext().registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED));
 
-      registrar.activeContext().registerReceiver(mReceiver,
-              new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED));
+      registrar.activeContext().registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED));
     }
 
     @Override
@@ -633,7 +665,6 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler,
       registrar.activity().unregisterReceiver(mReceiver);
     }
   };
-
 
   private final StreamHandler readResultsHandler = new StreamHandler() {
     @Override
