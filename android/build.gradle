@@ -1,5 +1,5 @@
 group 'id.kakzaki.blue_thermal_printer'
-version '1.0-SNAPSHOT'
+version '1.0.8'
 
 buildscript {
     repositories {
