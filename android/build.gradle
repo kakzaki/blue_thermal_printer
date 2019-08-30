@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.5.0'
     }
 }
 
@@ -34,10 +34,10 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
-    dependencies {
-        implementation 'com.android.support:support-compat:27.1.1'
-        implementation 'com.google.zxing:core:3.3.3'
-        implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
-    }
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.2'
+}
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'com.google.zxing:core:3.3.3'
+    implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
 }
