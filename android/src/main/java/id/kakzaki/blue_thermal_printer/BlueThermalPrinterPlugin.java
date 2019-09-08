@@ -241,7 +241,10 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
       case "printQRcode":
         if (arguments.containsKey("textToQR")) {
           String textToQR = (String) arguments.get("textToQR");
-          printQRcode(result, textToQR);
+          int width = (int) arguments.get("width");
+          int height = (int) arguments.get("height");
+          int align = (int) arguments.get("align");
+          printQRcode(result, textToQR, width, height, align);
         } else {
           result.error("invalid_argument", "argument 'textToQR' not found", null);
         }
@@ -544,20 +547,33 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     }
   }
 
-  private void printQRcode(Result result, String textToQR) {
+  private void printQRcode(Result result, String textToQR, int width, int height, int align) {
     MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
     }
     try {
-      BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE, 250, 250);
+      switch (align) {
+        case 0:
+          // left align
+          THREAD.write(PrinterCommands.ESC_ALIGN_LEFT);
+          break;
+        case 1:
+          // center align
+          THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+          break;
+        case 2:
+          // right align
+          THREAD.write(PrinterCommands.ESC_ALIGN_RIGHT);
+          break;
+      }
+      BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE, width, height);
       BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
       Bitmap bmp = barcodeEncoder.createBitmap(bitMatrix);
 
       if (bmp != null) {
         byte[] command = Utils.decodeBitmap(bmp);
-        THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
         THREAD.write(command);
       } else {
         Log.e("Print Photo error", "the file isn't exists");
