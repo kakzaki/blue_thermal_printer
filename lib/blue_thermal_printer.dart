@@ -83,8 +83,8 @@ class BlueThermalPrinter {
   Future<dynamic> printImage(String pathImage) =>
       _channel.invokeMethod('printImage', {'pathImage': pathImage});
 
-  Future<dynamic> printQRcode(String textToQR) =>
-      _channel.invokeMethod('printQRcode', {'textToQR': textToQR});
+  Future<dynamic> printQRcode(String textToQR, int width, int height, int align) =>
+      _channel.invokeMethod('printQRcode', {'textToQR': textToQR, 'width': width, 'height': height, 'align': align});
 
   Future<dynamic> printLeftRight(String string1,String string2,int size) =>
       _channel.invokeMethod('printLeftRight', {'string1': string1, 'string2': string2,'size': size });

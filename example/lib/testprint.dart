@@ -28,7 +28,7 @@ class TestPrint {
         bluetooth.printNewLine();
         bluetooth.printCustom("Terimakasih",2,1);
         bluetooth.printNewLine();
-        bluetooth.printQRcode("Insert Your Own Text to Generate");
+        bluetooth.printQRcode("Insert Your Own Text to Generate", 150, 150, 2);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.paperCut();
