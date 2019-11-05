@@ -72,10 +72,12 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     MethodChannel channel = new MethodChannel(registrar.messenger(), NAMESPACE + "/methods");
     EventChannel stateChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/state");
     EventChannel readChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/read");
-    BluetoothManager mBluetoothManager = (BluetoothManager) registrar.activity()
-            .getSystemService(Context.BLUETOOTH_SERVICE);
-    assert mBluetoothManager != null;
-    this.mBluetoothAdapter = mBluetoothManager.getAdapter();
+		if (registrar.activity() != null){
+			BluetoothManager mBluetoothManager = (BluetoothManager) registrar.activity()
+							.getSystemService(Context.BLUETOOTH_SERVICE);
+			assert mBluetoothManager != null;
+			this.mBluetoothAdapter = mBluetoothManager.getAdapter();
+		}
     channel.setMethodCallHandler(this);
     stateChannel.setStreamHandler(stateStreamHandler);
     readChannel.setStreamHandler(readResultsHandler);
