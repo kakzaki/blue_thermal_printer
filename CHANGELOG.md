@@ -1,6 +1,10 @@
+## 1.0.9
+
+* Avoiding activity null pointer, thanks to wmattei
+
 ## 1.0.8
 
-*fix crash with "Methods marked with @UiThread must be executed on the main thread, thanks to ricardochen
+* fix crash with "Methods marked with @UiThread must be executed on the main thread, thanks to ricardochen
 
 ## 1.0.7
 
