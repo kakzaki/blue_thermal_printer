@@ -21,7 +21,6 @@ class _MyAppState extends State<MyApp> {
   List<BluetoothDevice> _devices = [];
   BluetoothDevice _device;
   bool _connected = false;
-  bool _pressed = false;
   String pathImage;
   TestPrint testPrint;
 
@@ -47,8 +46,8 @@ class _MyAppState extends State<MyApp> {
 
 
   Future<void> initPlatformState() async {
+    bool isConnected=await bluetooth.isConnected;
     List<BluetoothDevice> devices = [];
-
     try {
       devices = await bluetooth.getBondedDevices();
     } on PlatformException {
@@ -60,13 +59,11 @@ class _MyAppState extends State<MyApp> {
         case BlueThermalPrinter.CONNECTED:
           setState(() {
             _connected = true;
-            _pressed = false;
           });
           break;
         case BlueThermalPrinter.DISCONNECTED:
           setState(() {
             _connected = false;
-            _pressed = false;
           });
           break;
         default:
@@ -79,6 +76,12 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _devices = devices;
     });
+
+    if(isConnected) {
+      setState(() {
+        _connected=true;
+      });
+    }
   }
 
   @override
@@ -89,42 +92,64 @@ class _MyAppState extends State<MyApp> {
           title: Text('Blue Thermal Printer'),
         ),
         body: Container(
-          child: ListView(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView(
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
+                    SizedBox(width: 10,),
                     Text(
                       'Device:',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    DropdownButton(
-                      items: _getDeviceItems(),
-                      onChanged: (value) => setState(() => _device = value),
-                      value: _device,
-                    ),
-                    RaisedButton(
-                      onPressed:
-                      _pressed ? null : _connected ? _disconnect : _connect,
-                      child: Text(_connected ? 'Disconnect' : 'Connect'),
+                    SizedBox(width: 30,),
+                    Expanded(
+                      child: DropdownButton(
+                        items: _getDeviceItems(),
+                        onChanged: (value) => setState(() => _device = value),
+                        value: _device,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
-                child:  RaisedButton(
-                  onPressed:(){
-                    testPrint.sample(pathImage);
-                  },
-                  child: Text('TesPrint'),
+                SizedBox(height: 10,),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    RaisedButton(
+                      color: Colors.brown,
+                      onPressed:(){
+                        initPlatformState();
+                      },
+                      child: Text('Refresh', style: TextStyle(color: Colors.white),),
+                    ),
+                    SizedBox(width: 20,),
+                    RaisedButton(
+                      color: _connected ?Colors.red:Colors.green,
+                      onPressed:
+                      _connected ? _disconnect : _connect,
+                      child: Text(_connected ? 'Disconnect' : 'Connect', style: TextStyle(color: Colors.white),),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
+                  child:  RaisedButton(
+                    color: Colors.brown,
+                    onPressed:(){
+                      testPrint.sample(pathImage);
+                    },
+                    child: Text('PRINT TEST', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -157,9 +182,9 @@ class _MyAppState extends State<MyApp> {
       bluetooth.isConnected.then((isConnected) {
         if (!isConnected) {
           bluetooth.connect(_device).catchError((error) {
-            setState(() => _pressed = false);
+            setState(() => _connected = false);
           });
-          setState(() => _pressed = true);
+          setState(() => _connected = true);
         }
       });
     }
@@ -168,7 +193,7 @@ class _MyAppState extends State<MyApp> {
 
   void _disconnect() {
     bluetooth.disconnect();
-    setState(() => _pressed = true);
+    setState(() => _connected = true);
   }
 
 //write to app path
@@ -177,36 +202,6 @@ class _MyAppState extends State<MyApp> {
     return new File(path).writeAsBytes(
         buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
-
-// testprint move to different class
-//  void _tesPrint() async {
-//    //SIZE
-//    // 0- normal size text
-//    // 1- only bold text
-//    // 2- bold with medium text
-//    // 3- bold with large text
-//    //ALIGN
-//    // 0- ESC_ALIGN_LEFT
-//    // 1- ESC_ALIGN_CENTER
-//    // 2- ESC_ALIGN_RIGHT
-//    bluetooth.isConnected.then((isConnected) {
-//      if (isConnected) {
-//        bluetooth.printCustom("HEADER",3,1);
-//        bluetooth.printNewLine();
-//        bluetooth.printImage(pathImage);
-//        bluetooth.printNewLine();
-//        bluetooth.printCustom("Body left",1,0);
-//        bluetooth.printCustom("Body right",0,2);
-//        bluetooth.printNewLine();
-//        bluetooth.printCustom("Terimakasih",2,1);
-//        bluetooth.printNewLine();
-//        bluetooth.printQRcode("Insert Your Own Text to Generate");
-//        bluetooth.printNewLine();
-//        bluetooth.printNewLine();
-//        bluetooth.paperCut();
-//      }
-//    });
-//  }
 
   Future show(
       String message, {

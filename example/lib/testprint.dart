@@ -15,20 +15,23 @@ class TestPrint {
     // 2- ESC_ALIGN_RIGHT
     bluetooth.isConnected.then((isConnected) {
       if (isConnected) {
+        bluetooth.printNewLine();
         bluetooth.printCustom("HEADER",3,1);
         bluetooth.printNewLine();
-        bluetooth.printImage(pathImage);
+        bluetooth.printImage(pathImage);   //path of your image/logo
         bluetooth.printNewLine();
         bluetooth.printLeftRight("LEFT", "RIGHT",0);
         bluetooth.printLeftRight("LEFT", "RIGHT",1);
         bluetooth.printNewLine();
         bluetooth.printLeftRight("LEFT", "RIGHT",2);
+        bluetooth.printLeftRight("LEFT", "RIGHT",3);
+        bluetooth.printLeftRight("LEFT", "RIGHT",4);
         bluetooth.printCustom("Body left",1,0);
         bluetooth.printCustom("Body right",0,2);
         bluetooth.printNewLine();
-        bluetooth.printCustom("Terimakasih",2,1);
+        bluetooth.printCustom("Thank You",2,1);
         bluetooth.printNewLine();
-        bluetooth.printQRcode("Insert Your Own Text to Generate", 150, 150, 2);
+        bluetooth.printQRcode("Insert Your Own Text to Generate", 200, 200, 1);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.paperCut();

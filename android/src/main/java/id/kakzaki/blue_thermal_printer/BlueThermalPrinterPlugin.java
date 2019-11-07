@@ -420,6 +420,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     byte[] bb = new byte[] { 0x1B, 0x21, 0x08 }; // 1- only bold text
     byte[] bb2 = new byte[] { 0x1B, 0x21, 0x20 }; // 2- bold with medium text
     byte[] bb3 = new byte[] { 0x1B, 0x21, 0x10 }; // 3- bold with large text
+    byte[] bb4 = new byte[] { 0x1B, 0x21, 0x30 }; // 4- strong text
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
@@ -438,6 +439,9 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
           break;
         case 3:
           THREAD.write(bb3);
+          break;
+        case 4:
+          THREAD.write(bb4);
           break;
       }
 
@@ -470,6 +474,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     byte[] bb = new byte[] { 0x1B, 0x21, 0x08 }; // 1- only bold text
     byte[] bb2 = new byte[] { 0x1B, 0x21, 0x20 }; // 2- bold with medium text
     byte[] bb3 = new byte[] { 0x1B, 0x21, 0x10 }; // 3- bold with large text
+    byte[] bb4 = new byte[] { 0x1B, 0x21, 0x30 }; // 4- strong text
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
@@ -487,6 +492,9 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
           break;
         case 3:
           THREAD.write(bb3);
+          break;
+        case 4:
+          THREAD.write(bb4);
           break;
       }
       THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
