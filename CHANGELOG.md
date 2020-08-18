@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Add print image bytes method, thanks to mvanvu
+
 ## 1.0.9
 
 * Avoiding activity null pointer, thanks to wmattei

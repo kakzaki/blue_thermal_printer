@@ -1,4 +1,6 @@
+import 'dart:typed_data';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+
 
 class TestPrint {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
@@ -13,6 +15,9 @@ class TestPrint {
     // 0- ESC_ALIGN_LEFT
     // 1- ESC_ALIGN_CENTER
     // 2- ESC_ALIGN_RIGHT
+
+//     var response = await http.get("IMAGE_URL");
+//     Uint8List bytes = response.bodyBytes;
     bluetooth.isConnected.then((isConnected) {
       if (isConnected) {
         bluetooth.printNewLine();
@@ -20,6 +25,7 @@ class TestPrint {
         bluetooth.printNewLine();
         bluetooth.printImage(pathImage);   //path of your image/logo
         bluetooth.printNewLine();
+//      bluetooth.printImageBytes(bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes));
         bluetooth.printLeftRight("LEFT", "RIGHT",0);
         bluetooth.printLeftRight("LEFT", "RIGHT",1);
         bluetooth.printNewLine();
