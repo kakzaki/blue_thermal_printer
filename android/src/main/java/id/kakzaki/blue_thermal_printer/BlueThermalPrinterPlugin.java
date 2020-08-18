@@ -240,6 +240,15 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
         }
         break;
 
+        case "printImageBytes":
+        if (arguments.containsKey("bytes")) {
+          byte[] bytes = (byte[]) arguments.get("bytes");
+          printImageBytes(result, bytes);
+        } else {
+          result.error("invalid_argument", "argument 'bytes' not found", null);
+        }
+        break;
+
       case "printQRcode":
         if (arguments.containsKey("textToQR")) {
           String textToQR = (String) arguments.get("textToQR");
@@ -543,6 +552,27 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     }
     try {
       Bitmap bmp = BitmapFactory.decodeFile(pathImage);
+      if (bmp != null) {
+        byte[] command = Utils.decodeBitmap(bmp);
+        THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
+        THREAD.write(command);
+      } else {
+        Log.e("Print Photo error", "the file isn't exists");
+      }
+      result.success(true);
+    } catch (Exception ex) {
+      Log.e(TAG, ex.getMessage(), ex);
+      result.error("write_error", ex.getMessage(), exceptionToString(ex));
+    }
+  }
+
+  private void printImageBytes(Result result, byte[] bytes) {
+    if (THREAD == null) {
+      result.error("write_error", "not connected", null);
+      return;
+    }
+    try {
+      Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
       if (bmp != null) {
         byte[] command = Utils.decodeBitmap(bmp);
         THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
