@@ -217,7 +217,8 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
           String message = (String) arguments.get("message");
           int size = (int) arguments.get("size");
           int align = (int) arguments.get("align");
-          printCustom(result, message, size, align);
+          String charset = (String) arguments.get("charset");
+          printCustom(result, message, size, align, charset);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
         }
@@ -422,7 +423,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     }
   }
 
-  private void printCustom(Result result, String message, int size, int align) {
+  private void printCustom(Result result, String message, int size, int align, String charset) {
     // Print config "mode"
     byte[] cc = new byte[] { 0x1B, 0x21, 0x03 }; // 0- normal size text
     // byte[] cc1 = new byte[]{0x1B,0x21,0x00}; // 0- normal size text
@@ -468,7 +469,11 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
           THREAD.write(PrinterCommands.ESC_ALIGN_RIGHT);
           break;
       }
-      THREAD.write(message.getBytes());
+      if(charset != null) {
+        THREAD.write(message.getBytes(charset));
+      } else {
+        THREAD.write(message.getBytes());
+      }
       THREAD.write(PrinterCommands.FEED_LINE);
       result.success(true);
     } catch (Exception ex) {
