@@ -266,7 +266,8 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
           String string1 = (String) arguments.get("string1");
           String string2 = (String) arguments.get("string2");
           int size = (int) arguments.get("size");
-          printLeftRight(result, string1, string2, size);
+          String charset = (String) arguments.get("charset");
+          printLeftRight(result, string1, string2, size, charset);
         } else {
           result.error("invalid_argument", "argument 'message' not found", null);
         }
@@ -482,7 +483,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     }
   }
 
-  private void printLeftRight(Result result, String msg1, String msg2, int size) {
+  private void printLeftRight(Result result, String msg1, String msg2, int size ,String charset) {
     byte[] cc = new byte[] { 0x1B, 0x21, 0x03 }; // 0- normal size text
     // byte[] cc1 = new byte[]{0x1B,0x21,0x00}; // 0- normal size text
     byte[] bb = new byte[] { 0x1B, 0x21, 0x08 }; // 1- only bold text
@@ -513,7 +514,12 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
       }
       THREAD.write(PrinterCommands.ESC_ALIGN_CENTER);
       String line = String.format("%-15s %15s %n", msg1, msg2);
-      THREAD.write(line.getBytes());
+
+      if(charset != null) {
+        THREAD.write(line.getBytes(charset));
+      } else {
+        THREAD.write(line.getBytes());
+      }
       result.success(true);
     } catch (Exception ex) {
       Log.e(TAG, ex.getMessage(), ex);

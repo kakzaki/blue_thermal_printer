@@ -102,9 +102,14 @@ class BlueThermalPrinter {
         'align': align
       });
 
-  Future<dynamic> printLeftRight(String string1, String string2, int size) =>
-      _channel.invokeMethod('printLeftRight',
-          {'string1': string1, 'string2': string2, 'size': size});
+  Future<dynamic> printLeftRight(String string1, String string2, int size,
+          {String charset}) =>
+      _channel.invokeMethod('printLeftRight', {
+        'string1': string1,
+        'string2': string2,
+        'size': size,
+        'charset': charset
+      });
 }
 
 class BluetoothDevice {
