@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+
 import 'package:flutter/services.dart';
 
 class BlueThermalPrinter {
@@ -20,13 +21,13 @@ class BlueThermalPrinter {
       const MethodChannel('$namespace/methods');
 
   static const EventChannel _readChannel =
-  const EventChannel('$namespace/read');
+      const EventChannel('$namespace/read');
 
   static const EventChannel _stateChannel =
-  const EventChannel('$namespace/state');
+      const EventChannel('$namespace/state');
 
   final StreamController<MethodCall> _methodStreamController =
-  new StreamController.broadcast();
+      new StreamController.broadcast();
 
   //Stream<MethodCall> get _methodStream => _methodStreamController.stream;
 
@@ -73,8 +74,14 @@ class BlueThermalPrinter {
   Future<dynamic> writeBytes(Uint8List message) =>
       _channel.invokeMethod('writeBytes', {'message': message});
 
-  Future<dynamic> printCustom(String message,int size, int align) =>
-      _channel.invokeMethod('printCustom', {'message': message, 'size': size, 'align': align});
+  Future<dynamic> printCustom(String message, int size, int align,
+          {String charset}) =>
+      _channel.invokeMethod('printCustom', {
+        'message': message,
+        'size': size,
+        'align': align,
+        'charset': charset
+      });
 
   Future<dynamic> printNewLine() => _channel.invokeMethod('printNewLine');
 
@@ -86,13 +93,24 @@ class BlueThermalPrinter {
   Future<dynamic> printImageBytes(Uint8List bytes) =>
       _channel.invokeMethod('printImageBytes', {'bytes': bytes});
 
-  Future<dynamic> printQRcode(String textToQR, int width, int height, int align) =>
-      _channel.invokeMethod('printQRcode', {'textToQR': textToQR, 'width': width, 'height': height, 'align': align});
+  Future<dynamic> printQRcode(
+          String textToQR, int width, int height, int align) =>
+      _channel.invokeMethod('printQRcode', {
+        'textToQR': textToQR,
+        'width': width,
+        'height': height,
+        'align': align
+      });
 
-  Future<dynamic> printLeftRight(String string1,String string2,int size) =>
-      _channel.invokeMethod('printLeftRight', {'string1': string1, 'string2': string2,'size': size });
+  Future<dynamic> printLeftRight(String string1, String string2, int size,
+          {String charset}) =>
+      _channel.invokeMethod('printLeftRight', {
+        'string1': string1,
+        'string2': string2,
+        'size': size,
+        'charset': charset
+      });
 }
-
 
 class BluetoothDevice {
   final String name;
@@ -107,11 +125,11 @@ class BluetoothDevice {
         address = map['address'];
 
   Map<String, dynamic> toMap() => {
-    'name': this.name,
-    'address': this.address,
-    'type': this.type,
-    'connected': this.connected,
-  };
+        'name': this.name,
+        'address': this.address,
+        'type': this.type,
+        'connected': this.connected,
+      };
 
   operator ==(Object other) {
     return other is BluetoothDevice && other.address == this.address;
