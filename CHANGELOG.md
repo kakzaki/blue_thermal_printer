@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Support different charset in print methods, thanks to danilof
+
 ## 1.1.0
 
 * Add print image bytes method, thanks to mvanvu

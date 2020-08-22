@@ -32,6 +32,9 @@ class TestPrint {
         bluetooth.printLeftRight("LEFT", "RIGHT",2);
         bluetooth.printLeftRight("LEFT", "RIGHT",3);
         bluetooth.printLeftRight("LEFT", "RIGHT",4);
+        String testString = " čĆžŽšŠ-H-ščđ";
+        bluetooth.printCustom(testString, 1, 1, charset: "windows-1250");
+        bluetooth.printLeftRight("Številka:", "18000001", 1, charset: "windows-1250");
         bluetooth.printCustom("Body left",1,0);
         bluetooth.printCustom("Body right",0,2);
         bluetooth.printNewLine();
