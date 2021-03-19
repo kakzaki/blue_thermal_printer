@@ -34,32 +34,32 @@ class BlueThermalPrinter {
   BlueThermalPrinter._() {
     _channel.setMethodCallHandler((MethodCall call) {
       _methodStreamController.add(call);
-    });
+    } as Future<dynamic> Function(MethodCall)?);
   }
 
   static BlueThermalPrinter _instance = new BlueThermalPrinter._();
 
   static BlueThermalPrinter get instance => _instance;
 
-  Stream<int> onStateChanged() =>
+  Stream<int?> onStateChanged() =>
       _stateChannel.receiveBroadcastStream().map((buffer) => buffer);
 
   Stream<String> onRead() =>
       _readChannel.receiveBroadcastStream().map((buffer) => buffer.toString());
 
-  Future<bool> get isAvailable async =>
+  Future<bool?> get isAvailable async =>
       await _channel.invokeMethod('isAvailable');
 
-  Future<bool> get isOn async => await _channel.invokeMethod('isOn');
+  Future<bool?> get isOn async => await _channel.invokeMethod('isOn');
 
-  Future<bool> get isConnected async =>
+  Future<bool?> get isConnected async =>
       await _channel.invokeMethod('isConnected');
 
-  Future<bool> get openSettings async =>
+  Future<bool?> get openSettings async =>
       await _channel.invokeMethod('openSettings');
 
   Future<List<BluetoothDevice>> getBondedDevices() async {
-    final List list = await _channel.invokeMethod('getBondedDevices');
+    final List list = await (_channel.invokeMethod('getBondedDevices') as FutureOr<List<dynamic>>);
     return list.map((map) => BluetoothDevice.fromMap(map)).toList();
   }
 
@@ -75,7 +75,7 @@ class BlueThermalPrinter {
       _channel.invokeMethod('writeBytes', {'message': message});
 
   Future<dynamic> printCustom(String message, int size, int align,
-          {String charset}) =>
+          {String? charset}) =>
       _channel.invokeMethod('printCustom', {
         'message': message,
         'size': size,
@@ -103,7 +103,7 @@ class BlueThermalPrinter {
       });
 
   Future<dynamic> printLeftRight(String string1, String string2, int size,
-          {String charset}) =>
+          {String? charset}) =>
       _channel.invokeMethod('printLeftRight', {
         'string1': string1,
         'string2': string2,
@@ -113,8 +113,8 @@ class BlueThermalPrinter {
 }
 
 class BluetoothDevice {
-  final String name;
-  final String address;
+  final String? name;
+  final String? address;
   final int type = 0;
   bool connected = false;
 

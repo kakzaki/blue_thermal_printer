@@ -1,3 +1,7 @@
+## 1.1.2
+
+* Migrate to null-safety
+
 ## 1.1.1
 
 * Support different charset in print methods, thanks to danilof
