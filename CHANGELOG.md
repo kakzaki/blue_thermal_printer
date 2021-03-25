@@ -1,3 +1,7 @@
+## 1.1.3
+
+* Fix Cast Error on getBondedDevices
+
 ## 1.1.2
 
 * Migrate to null-safety

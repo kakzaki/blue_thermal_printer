@@ -59,7 +59,7 @@ class BlueThermalPrinter {
       await _channel.invokeMethod('openSettings');
 
   Future<List<BluetoothDevice>> getBondedDevices() async {
-    final List list = await (_channel.invokeMethod('getBondedDevices') as FutureOr<List<dynamic>>);
+    final List list = await (_channel.invokeMethod('getBondedDevices'));
     return list.map((map) => BluetoothDevice.fromMap(map)).toList();
   }
 
