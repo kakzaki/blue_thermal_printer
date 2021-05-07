@@ -32,7 +32,7 @@ class BlueThermalPrinter {
   //Stream<MethodCall> get _methodStream => _methodStreamController.stream;
 
   BlueThermalPrinter._() {
-    _channel.setMethodCallHandler((MethodCall call) {
+    _channel.setMethodCallHandler((MethodCall call) async {
       _methodStreamController.add(call);
     });
   }
