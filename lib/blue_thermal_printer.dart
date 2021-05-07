@@ -34,7 +34,7 @@ class BlueThermalPrinter {
   BlueThermalPrinter._() {
     _channel.setMethodCallHandler((MethodCall call) {
       _methodStreamController.add(call);
-    }
+    });
   }
 
   static BlueThermalPrinter _instance = new BlueThermalPrinter._();
