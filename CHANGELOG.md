@@ -1,3 +1,7 @@
+## 1.1.4
+
+* Fix bug
+
 ## 1.1.3
 
 * Fix Cast Error on getBondedDevices
