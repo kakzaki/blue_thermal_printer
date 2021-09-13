@@ -1,6 +1,8 @@
 package id.kakzaki.blue_thermal_printer;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -10,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -31,6 +35,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.EventChannel.StreamHandler;
 import io.flutter.plugin.common.EventChannel.EventSink;
@@ -38,23 +46,22 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
 
-public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermissionsResultListener {
+public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,MethodCallHandler, RequestPermissionsResultListener {
 
   private static final String TAG = "BThermalPrinterPlugin";
   private static final String NAMESPACE = "blue_thermal_printer";
   private static final int REQUEST_COARSE_LOCATION_PERMISSIONS = 1451;
   private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
   private static ConnectedThread THREAD = null;
-  private final Registrar registrar;
   private BluetoothAdapter mBluetoothAdapter;
 
   private Result pendingResult;
@@ -62,25 +69,109 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
   private EventSink readSink;
   private EventSink statusSink;
 
+  private FlutterPluginBinding pluginBinding;
+  private ActivityPluginBinding activityBinding;
+  private Object initializationLock = new Object();
+  private Context context;
+  private MethodChannel channel;
+
+  private EventChannel stateChannel;
+  private EventChannel readChannel;
+  private BluetoothManager mBluetoothManager;
+
+  private Application application;
+  private Activity activity;
+
   public static void registerWith(Registrar registrar) {
-    final BlueThermalPrinterPlugin instance = new BlueThermalPrinterPlugin(registrar);
-    registrar.addRequestPermissionsResultListener(instance);
+    final BlueThermalPrinterPlugin instance = new BlueThermalPrinterPlugin();
+    //registrar.addRequestPermissionsResultListener(instance);
+    Activity activity = registrar.activity();
+    Application application = null;
+    instance.setup(registrar.messenger(), application, activity, registrar, null);
+
   }
 
-  BlueThermalPrinterPlugin(Registrar registrar) {
-    this.registrar = registrar;
-    MethodChannel channel = new MethodChannel(registrar.messenger(), NAMESPACE + "/methods");
-    EventChannel stateChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/state");
-    EventChannel readChannel = new EventChannel(registrar.messenger(), NAMESPACE + "/read");
-		if (registrar.activity() != null){
-			BluetoothManager mBluetoothManager = (BluetoothManager) registrar.activity()
-							.getSystemService(Context.BLUETOOTH_SERVICE);
-			assert mBluetoothManager != null;
-			this.mBluetoothAdapter = mBluetoothManager.getAdapter();
-		}
-    channel.setMethodCallHandler(this);
-    stateChannel.setStreamHandler(stateStreamHandler);
-    readChannel.setStreamHandler(readResultsHandler);
+  public BlueThermalPrinterPlugin() {
+  }
+
+  @Override
+  public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+    pluginBinding = binding;
+  }
+
+  @Override
+  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+    pluginBinding = null;
+  }
+
+  @Override
+  public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+    activityBinding = binding;
+    setup(
+            pluginBinding.getBinaryMessenger(),
+            (Application) pluginBinding.getApplicationContext(),
+            activityBinding.getActivity(),
+            null,
+            activityBinding);
+  }
+
+  @Override
+  public void onDetachedFromActivityForConfigChanges() {
+    onDetachedFromActivity();
+  }
+
+  @Override
+  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+    onAttachedToActivity(binding);
+  }
+
+  @Override
+  public void onDetachedFromActivity() {
+    detach();
+  }
+
+  private void setup(
+          final BinaryMessenger messenger,
+          final Application application,
+          final Activity activity,
+          final PluginRegistry.Registrar registrar,
+          final ActivityPluginBinding activityBinding) {
+    synchronized (initializationLock) {
+      Log.i(TAG, "setup");
+      this.activity = activity;
+      this.application = application;
+      this.context = application;
+      channel = new MethodChannel(messenger, NAMESPACE + "/methods");
+      channel.setMethodCallHandler(this);
+      stateChannel = new EventChannel(messenger, NAMESPACE + "/state");
+      stateChannel.setStreamHandler(stateStreamHandler);
+      readChannel = new EventChannel(messenger, NAMESPACE + "/state");
+      readChannel.setStreamHandler(readResultsHandler);
+      mBluetoothManager = (BluetoothManager) application.getSystemService(Context.BLUETOOTH_SERVICE);
+      mBluetoothAdapter = mBluetoothManager.getAdapter();
+      if (registrar != null) {
+        // V1 embedding setup for activity listeners.
+        registrar.addRequestPermissionsResultListener(this);
+      } else {
+        // V2 embedding setup for activity listeners.
+        activityBinding.addRequestPermissionsResultListener(this);
+      }
+    }
+  }
+
+
+  private void detach() {
+    Log.i(TAG, "detach");
+    context = null;
+    activityBinding.removeRequestPermissionsResultListener(this);
+    activityBinding = null;
+    channel.setMethodCallHandler(null);
+    channel = null;
+    stateChannel.setStreamHandler(null);
+    stateChannel = null;
+    mBluetoothAdapter = null;
+    mBluetoothManager = null;
+    application = null;
   }
 
   // MethodChannel.Result wrapper that responds on the platform thread.
@@ -155,7 +246,7 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
         break;
 
       case "openSettings":
-        ContextCompat.startActivity(registrar.activity(), new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS),
+        ContextCompat.startActivity(context, new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS),
                 null);
         result.success(true);
         break;
@@ -163,10 +254,10 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
       case "getBondedDevices":
         try {
 
-          if (ContextCompat.checkSelfPermission(registrar.activity(),
+          if (ContextCompat.checkSelfPermission(activity,
                   Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(registrar.activity(),
+            ActivityCompat.requestPermissions(activity,
                     new String[] { Manifest.permission.ACCESS_COARSE_LOCATION }, REQUEST_COARSE_LOCATION_PERMISSIONS);
 
             pendingResult = result;
@@ -717,17 +808,17 @@ public class BlueThermalPrinterPlugin implements MethodCallHandler, RequestPermi
     @Override
     public void onListen(Object o, EventSink eventSink) {
       statusSink = eventSink;
-      registrar.activity().registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+      context.registerReceiver(mReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
-      registrar.activeContext().registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED));
+      context.registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED));
 
-      registrar.activeContext().registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED));
+      context.registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED));
     }
 
     @Override
     public void onCancel(Object o) {
       statusSink = null;
-      registrar.activity().unregisterReceiver(mReceiver);
+      context.unregisterReceiver(mReceiver);
     }
   };
 

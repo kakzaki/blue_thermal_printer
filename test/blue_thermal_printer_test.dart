@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+
 
 void main() {
   const MethodChannel channel = MethodChannel('blue_thermal_printer');

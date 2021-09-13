@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 
 

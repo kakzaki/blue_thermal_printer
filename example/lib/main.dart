@@ -122,16 +122,20 @@ class _MyAppState extends State<MyApp> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    RaisedButton(
-                      color: Colors.brown,
+                    ElevatedButton(
+                      style:ElevatedButton.styleFrom(
+                          primary:Colors.brown
+                      ),
                       onPressed:(){
                         initPlatformState();
                       },
                       child: Text('Refresh', style: TextStyle(color: Colors.white),),
                     ),
                     SizedBox(width: 20,),
-                    RaisedButton(
-                      color: _connected ?Colors.red:Colors.green,
+                    ElevatedButton(
+                      style:ElevatedButton.styleFrom(
+                        primary:_connected ?Colors.red:Colors.green
+                      ),
                       onPressed:
                       _connected ? _disconnect : _connect,
                       child: Text(_connected ? 'Disconnect' : 'Connect', style: TextStyle(color: Colors.white),),
@@ -140,8 +144,10 @@ class _MyAppState extends State<MyApp> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
-                  child:  RaisedButton(
-                    color: Colors.brown,
+                  child: ElevatedButton(
+                    style:ElevatedButton.styleFrom(
+                        primary:Colors.brown
+                    ),
                     onPressed:(){
                       testPrint.sample(pathImage);
                     },
@@ -208,7 +214,7 @@ class _MyAppState extends State<MyApp> {
         Duration duration: const Duration(seconds: 3),
       }) async {
     await new Future.delayed(new Duration(milliseconds: 100));
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           message,

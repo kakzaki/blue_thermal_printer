@@ -1,3 +1,7 @@
+## 1.1.5
+
+* Migrate to Android embedding v2
+
 ## 1.1.4
 
 * Fix Error Null-Safety
