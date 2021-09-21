@@ -1,6 +1,6 @@
 name: blue_thermal_printer
 description: A Flutter plugin for connecting to thermal printer via bluetooth
-version: 1.1.6
+version: 1.1.7
 homepage: https://github.com/kakzaki/blue_thermal_printer
 
 environment:
@@ -29,9 +29,8 @@ flutter:
       android:
         package: id.kakzaki.blue_thermal_printer
         pluginClass: BlueThermalPrinterPlugin
-#  plugin:
-#    androidPackage: id.kakzaki.blue_thermal_printer
-#    pluginClass: BlueThermalPrinterPlugin
+      ios:
+        pluginClass: FlutterBluePlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

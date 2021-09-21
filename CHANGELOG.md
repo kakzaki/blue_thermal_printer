@@ -1,3 +1,7 @@
+## 1.1.7
+
+* dartdoc comments and Dart formatter
+
 ## 1.1.6
 
 * Add print3Column method

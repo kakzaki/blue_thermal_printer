@@ -41,9 +41,11 @@ class BlueThermalPrinter {
 
   static BlueThermalPrinter get instance => _instance;
 
+  ///onStateChanged()
   Stream<int?> onStateChanged() =>
       _stateChannel.receiveBroadcastStream().map((buffer) => buffer);
 
+  ///onRead()
   Stream<String> onRead() =>
       _readChannel.receiveBroadcastStream().map((buffer) => buffer.toString());
 
@@ -58,22 +60,28 @@ class BlueThermalPrinter {
   Future<bool?> get openSettings async =>
       await _channel.invokeMethod('openSettings');
 
+  ///getBondedDevices()
   Future<List<BluetoothDevice>> getBondedDevices() async {
     final List list = await (_channel.invokeMethod('getBondedDevices'));
     return list.map((map) => BluetoothDevice.fromMap(map)).toList();
   }
 
+  ///connect(BluetoothDevice device)
   Future<dynamic> connect(BluetoothDevice device) =>
       _channel.invokeMethod('connect', device.toMap());
 
+  ///disconnect()
   Future<dynamic> disconnect() => _channel.invokeMethod('disconnect');
 
+  ///write(String message)
   Future<dynamic> write(String message) =>
       _channel.invokeMethod('write', {'message': message});
 
+  ///writeBytes(Uint8List message)
   Future<dynamic> writeBytes(Uint8List message) =>
       _channel.invokeMethod('writeBytes', {'message': message});
 
+  ///printCustom(String message, int size, int align,{String? charset})
   Future<dynamic> printCustom(String message, int size, int align,
           {String? charset}) =>
       _channel.invokeMethod('printCustom', {
@@ -83,16 +91,21 @@ class BlueThermalPrinter {
         'charset': charset
       });
 
+  ///printNewLine()
   Future<dynamic> printNewLine() => _channel.invokeMethod('printNewLine');
 
+  ///paperCut()
   Future<dynamic> paperCut() => _channel.invokeMethod('paperCut');
 
+  ///printImage(String pathImage)
   Future<dynamic> printImage(String pathImage) =>
       _channel.invokeMethod('printImage', {'pathImage': pathImage});
 
+  ///printImageBytes(Uint8List bytes)
   Future<dynamic> printImageBytes(Uint8List bytes) =>
       _channel.invokeMethod('printImageBytes', {'bytes': bytes});
 
+  ///printQRcode(String textToQR, int width, int height, int align)
   Future<dynamic> printQRcode(
           String textToQR, int width, int height, int align) =>
       _channel.invokeMethod('printQRcode', {
@@ -102,6 +115,7 @@ class BlueThermalPrinter {
         'align': align
       });
 
+  ///printLeftRight(String string1, String string2, int size,{String? charset, String? format})
   Future<dynamic> printLeftRight(String string1, String string2, int size,
           {String? charset, String? format}) =>
       _channel.invokeMethod('printLeftRight', {
@@ -109,22 +123,26 @@ class BlueThermalPrinter {
         'string2': string2,
         'size': size,
         'charset': charset,
-        'format':format
+        'format': format
       });
 
-  Future<dynamic> print3Column(String string1, String string2, String string3, int size,
-      {String? charset, String? format}) =>
+  ///print3Column(String string1, String string2, String string3, int size,{String? charset, String? format})
+  Future<dynamic> print3Column(
+          String string1, String string2, String string3, int size,
+          {String? charset, String? format}) =>
       _channel.invokeMethod('print3Column', {
         'string1': string1,
         'string2': string2,
         'string3': string3,
         'size': size,
         'charset': charset,
-        'format':format
+        'format': format
       });
 
-  Future<dynamic> print4Column(String string1, String string2, String string3,String string4, int size,
-      {String? charset, String? format}) =>
+  ///print4Column(String string1, String string2, String string3,String string4, int size,{String? charset, String? format})
+  Future<dynamic> print4Column(String string1, String string2, String string3,
+          String string4, int size,
+          {String? charset, String? format}) =>
       _channel.invokeMethod('print4Column', {
         'string1': string1,
         'string2': string2,
@@ -132,9 +150,8 @@ class BlueThermalPrinter {
         'string4': string4,
         'size': size,
         'charset': charset,
-        'format':format
+        'format': format
       });
-
 }
 
 class BluetoothDevice {
