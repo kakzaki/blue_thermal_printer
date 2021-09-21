@@ -1,3 +1,9 @@
+## 1.1.6
+
+* Add print3Column method
+* Add print4Column method
+* Support format string
+
 ## 1.1.5
 
 * Migrate to Android embedding v2
