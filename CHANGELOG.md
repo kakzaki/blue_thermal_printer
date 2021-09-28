@@ -1,3 +1,6 @@
+## 1.1.8
+* Fix bug on ios build
+
 ## 1.1.7
 
 * dartdoc comments and Dart formatter
