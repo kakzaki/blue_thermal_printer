@@ -1,3 +1,8 @@
+## 1.1.9
+* fix bluetooth listener not working, add additional bluetooth state info, add get connected device function
+* Issue #123 fix - app will now automatically disconnect if device is turned off
+  thanks to knight-dev
+
 ## 1.1.8
 * Fix bug on ios build
 

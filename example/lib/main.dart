@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:blue_thermal_printer_example/testprint.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
