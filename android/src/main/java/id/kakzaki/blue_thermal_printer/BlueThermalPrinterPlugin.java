@@ -837,7 +837,6 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       BitMatrix bitMatrix = multiFormatWriter.encode(textToQR, BarcodeFormat.QR_CODE, width, height);
       BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
       Bitmap bmp = barcodeEncoder.createBitmap(bitMatrix);
-
       if (bmp != null) {
         byte[] command = Utils.decodeBitmap(bmp);
         THREAD.write(command);
