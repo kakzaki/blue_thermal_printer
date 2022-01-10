@@ -57,11 +57,49 @@ class _MyAppState extends State<MyApp> {
         case BlueThermalPrinter.CONNECTED:
           setState(() {
             _connected = true;
+            print("bluetooth device state: connected");
           });
           break;
         case BlueThermalPrinter.DISCONNECTED:
           setState(() {
             _connected = false;
+            print("bluetooth device state: disconnected");
+          });
+          break;
+        case BlueThermalPrinter.DISCONNECT_REQUESTED:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: disconnect requested");
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_OFF:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth turning off");
+          });
+          break;
+        case BlueThermalPrinter.STATE_OFF:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth off");
+          });
+          break;
+        case BlueThermalPrinter.STATE_ON:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth on");
+          });
+          break;
+        case BlueThermalPrinter.STATE_TURNING_ON:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: bluetooth turning on");
+          });
+          break;
+        case BlueThermalPrinter.ERROR:
+          setState(() {
+            _connected = false;
+            print("bluetooth device state: error");
           });
           break;
         default:
@@ -204,7 +242,7 @@ class _MyAppState extends State<MyApp> {
 
   void _disconnect() {
     bluetooth.disconnect();
-    setState(() => _connected = true);
+    setState(() => _connected = false);
   }
 
 //write to app path

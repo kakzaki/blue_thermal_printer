@@ -145,7 +145,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
       channel.setMethodCallHandler(this);
       stateChannel = new EventChannel(messenger, NAMESPACE + "/state");
       stateChannel.setStreamHandler(stateStreamHandler);
-      readChannel = new EventChannel(messenger, NAMESPACE + "/state");
+      readChannel = new EventChannel(messenger, NAMESPACE + "/read");
       readChannel.setStreamHandler(readResultsHandler);
       mBluetoothManager = (BluetoothManager) application.getSystemService(Context.BLUETOOTH_SERVICE);
       mBluetoothAdapter = mBluetoothManager.getAdapter();
@@ -228,6 +228,10 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
 
     switch (call.method) {
 
+      case "state":
+        state(result);
+        break;
+
       case "isAvailable":
         result.success(mBluetoothAdapter != null);
         break;
@@ -243,6 +247,15 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
 
       case "isConnected":
         result.success(THREAD != null);
+        break;
+
+      case "isDeviceConnected":
+        if (arguments.containsKey("address")) {
+          String address = (String) arguments.get("address");
+          isDeviceConnected(result, address);
+        } else {
+          result.error("invalid_argument", "argument 'address' not found", null);
+        }
         break;
 
       case "openSettings":
@@ -418,6 +431,30 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
     return false;
   }
 
+  private void state(Result result) {
+    try {
+      switch (mBluetoothAdapter.getState()) {
+        case BluetoothAdapter.STATE_OFF:
+          result.success(BluetoothAdapter.STATE_OFF);
+          break;
+        case BluetoothAdapter.STATE_ON:
+          result.success(BluetoothAdapter.STATE_ON);
+          break;
+        case BluetoothAdapter.STATE_TURNING_OFF:
+          result.success(BluetoothAdapter.STATE_TURNING_OFF);
+          break;
+        case BluetoothAdapter.STATE_TURNING_ON:
+          result.success(BluetoothAdapter.STATE_TURNING_ON);
+          break;
+        default:
+          result.success(0);
+          break;
+      }
+    } catch (SecurityException e) {
+      result.error("invalid_argument", "Argument 'address' not found", null);
+    }
+  }
+
   /**
    * @param result result
    */
@@ -434,6 +471,37 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
     }
 
     result.success(list);
+  }
+
+
+  /**
+   * @param result  result
+   * @param address address
+   */
+  private void isDeviceConnected(Result result, String address) {
+
+    AsyncTask.execute(() -> {
+      try {
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
+        if (device == null) {
+          result.error("connect_error", "device not found", null);
+          return;
+        }
+
+        if (THREAD != null && device.ACTION_ACL_CONNECTED.equals(new Intent(BluetoothDevice.ACTION_ACL_CONNECTED).getAction())) {
+          result.success(true);
+          return;
+        }else{
+          result.success(false);
+          return;
+        }
+
+      } catch (Exception ex) {
+        Log.e(TAG, ex.getMessage(), ex);
+        result.error("connect_error", ex.getMessage(), exceptionToString(ex));
+      }
+    });
   }
 
   private String exceptionToString(Exception ex) {
@@ -921,6 +989,9 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           statusSink.success(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1));
         } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
           statusSink.success(1);
+        } else if (BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED.equals(action)) {
+          THREAD = null;
+          statusSink.success(2);
         } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
           THREAD = null;
           statusSink.success(0);
@@ -935,7 +1006,10 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
 
       context.registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED));
 
+      context.registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED));
+
       context.registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED));
+
     }
 
     @Override
