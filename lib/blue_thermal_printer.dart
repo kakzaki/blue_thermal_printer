@@ -14,6 +14,7 @@ class BlueThermalPrinter {
   static const int ERROR = -1;
   static const int CONNECTED = 1;
   static const int DISCONNECTED = 0;
+  static const int DISCONNECT_REQUESTED = 2;
 
   static const String namespace = 'blue_thermal_printer';
 
@@ -42,8 +43,11 @@ class BlueThermalPrinter {
   static BlueThermalPrinter get instance => _instance;
 
   ///onStateChanged()
-  Stream<int?> onStateChanged() =>
-      _stateChannel.receiveBroadcastStream().map((buffer) => buffer);
+  Stream<int?> onStateChanged() async* {
+    yield await _channel.invokeMethod('state').then((buffer) => buffer);
+
+    yield* _stateChannel.receiveBroadcastStream().map((buffer) => buffer);
+  }
 
   ///onRead()
   Stream<String> onRead() =>
@@ -65,6 +69,10 @@ class BlueThermalPrinter {
     final List list = await (_channel.invokeMethod('getBondedDevices'));
     return list.map((map) => BluetoothDevice.fromMap(map)).toList();
   }
+
+  ///isDeviceConnected(BluetoothDevice device)
+  Future<bool?> isDeviceConnected(BluetoothDevice device) =>
+      _channel.invokeMethod('isDeviceConnected', device.toMap());
 
   ///connect(BluetoothDevice device)
   Future<dynamic> connect(BluetoothDevice device) =>
