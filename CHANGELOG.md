@@ -1,3 +1,6 @@
+## 1.2.0
+* fix web build issue
+
 ## 1.1.9
 * fix bluetooth listener not working, add additional bluetooth state info, add get connected device function
 * Issue #123 fix - app will now automatically disconnect if device is turned off
