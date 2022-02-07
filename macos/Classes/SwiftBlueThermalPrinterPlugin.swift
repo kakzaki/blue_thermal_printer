@@ -1,14 +1,15 @@
-import Flutter
-import UIKit
+#if canImport(FlutterMacOS)
+    import Cocoa
+    import FlutterMacOS
+#endif
 
-public class SwiftBlueThermalPrinterPlugin: NSObject, FlutterPlugin {
+public class AssetsAudioPlayer: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "blue_thermal_printer", binaryMessenger: registrar.messenger())
-    let instance = SwiftBlueThermalPrinterPlugin()
-    registrar.addMethodCallDelegate(instance, channel: channel)
+    let music = Music(messenger: registrar.messenger, registrar: registrar)
+    music.start()
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    result("iOS " + UIDevice.current.systemVersion)
+
   }
 }

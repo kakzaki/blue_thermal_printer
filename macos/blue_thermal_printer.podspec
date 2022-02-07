@@ -13,8 +13,8 @@ A new Flutter plugin for connecting to thermal printer vie bluetooth
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Zaki Mubarok' => 'kakzaki@gmail.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*''
-  s.public_header_files = 'Classes/**/*.h''
+  s.source_files = 'Classes/**/*'
+  s.public_header_files = 'Classes/**/*.h'
   s.dependency 'FlutterMacOS'
   s.platform = :osx, '10.13'
   s.framework = 'CoreBluetooth'
