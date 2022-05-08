@@ -619,6 +619,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
     byte[] bb2 = new byte[] { 0x1B, 0x21, 0x20 }; // 2- bold with medium text
     byte[] bb3 = new byte[] { 0x1B, 0x21, 0x10 }; // 3- bold with large text
     byte[] bb4 = new byte[] { 0x1B, 0x21, 0x30 }; // 4- strong text
+    byte[] bb5 = new byte[] { 0x1B, 0x21, 0x50 }; // 5- extra strong text
     if (THREAD == null) {
       result.error("write_error", "not connected", null);
       return;
@@ -641,6 +642,8 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
         case 4:
           THREAD.write(bb4);
           break;
+        case 5:
+          THREAD.write(bb5);
       }
 
       switch (align) {
