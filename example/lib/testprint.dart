@@ -17,7 +17,7 @@ class TestPrint {
 //     var response = await http.get("IMAGE_URL");
 //     Uint8List bytes = response.bodyBytes;
     bluetooth.isConnected.then((isConnected) {
-      if (isConnected) {
+      if (isConnected==true) {
         bluetooth.printNewLine();
         bluetooth.printCustom("HEADER", 3, 1);
         bluetooth.printNewLine();

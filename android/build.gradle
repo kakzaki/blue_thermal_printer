@@ -1,5 +1,5 @@
 group 'id.kakzaki.blue_thermal_printer'
-version '1.1.3'
+
 
 buildscript {
     repositories {
@@ -22,7 +22,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -34,7 +34,6 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
-    buildToolsVersion '29.0.3'
 }
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.2'
