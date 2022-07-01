@@ -188,7 +188,6 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
     }
 
     final Map<String, Object> arguments = call.arguments();
-    assert arguments != null;
     switch (call.method) {
 
       case "state":
