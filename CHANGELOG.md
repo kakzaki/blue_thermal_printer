@@ -1,3 +1,6 @@
+## 1.2.2
+* upgrading gradle
+
 ## 1.2.1
 * fix android 12 permission
 
