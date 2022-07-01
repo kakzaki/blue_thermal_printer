@@ -1,3 +1,6 @@
+## 1.2.1
+* fix android 12 permission
+
 ## 1.2.0
 * fix web build issue
 
