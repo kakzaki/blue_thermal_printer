@@ -252,6 +252,7 @@ EXAMPLE:
             bluetooth.printCustom("Thank You",2,1);
             bluetooth.printNewLine();
             bluetooth.printQRcode("Insert Your Own Text to Generate", 200, 200, 1);
+            bluetooth.drawerPin2(); // or you can use bluetooth.drawerPin5();
             bluetooth.printNewLine();
             bluetooth.printNewLine();
             bluetooth.paperCut();

@@ -55,6 +55,11 @@ public class PrinterCommands {
     public static final byte[] ESC_CANCLE_HORIZONTAL_CENTERS = new byte[] { 0x1B, 0x44, 00 };
     /*********************************************/
 
+    /*********** Open Cash Drawer ****************/    
+    public static final byte[] ESC_DRAWER_PIN2 = new byte[] { 0x1B, 'p', 0x30 };
+    public static final byte[] ESC_DRAWER_PIN5 = new byte[] { 0x1B, 'p', 0x31 };
+    /*********************************************/
+
     public static final byte[] ESC_ENTER = new byte[] { 0x1B, 0x4A, 0x40 };
     public static final byte[] PRINTE_TEST = new byte[] { 0x1D, 0x28, 0x41 };
 
