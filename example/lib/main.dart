@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:blue_thermal_printer_example/testprint.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -17,9 +16,8 @@ class _MyAppState extends State<MyApp> {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
   List<BluetoothDevice> _devices = [];
-  BluetoothDevice _device;
+  BluetoothDevice? _device;
   bool _connected = false;
-  String pathImage;
   TestPrint testPrint=TestPrint();
 
   @override
@@ -30,12 +28,12 @@ class _MyAppState extends State<MyApp> {
 
 
   Future<void> initPlatformState() async {
-    bool isConnected = await bluetooth.isConnected;
+    bool? isConnected = await bluetooth.isConnected;
     List<BluetoothDevice> devices = [];
     try {
       devices = await bluetooth.getBondedDevices();
     } on PlatformException {
-      // TODO - Error
+
     }
 
     bluetooth.onStateChanged().listen((state) {
@@ -99,7 +97,7 @@ class _MyAppState extends State<MyApp> {
       _devices = devices;
     });
 
-    if (isConnected) {
+    if (isConnected==true) {
       setState(() {
         _connected = true;
       });
@@ -137,7 +135,7 @@ class _MyAppState extends State<MyApp> {
                     Expanded(
                       child: DropdownButton(
                         items: _getDeviceItems(),
-                        onChanged: (value) => setState(() => _device = value),
+                        onChanged: (BluetoothDevice? value) => setState(() => _device = value),
                         value: _device,
                       ),
                     ),
@@ -203,7 +201,7 @@ class _MyAppState extends State<MyApp> {
     } else {
       _devices.forEach((device) {
         items.add(DropdownMenuItem(
-          child: Text(device.name),
+          child: Text(device.name??""),
           value: device,
         ));
       });
@@ -212,17 +210,17 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _connect() {
-    if (_device == null) {
-      show('No device selected.');
-    } else {
+    if (_device != null) {
       bluetooth.isConnected.then((isConnected) {
-        if (!isConnected) {
-          bluetooth.connect(_device).catchError((error) {
+        if (isConnected==true) {
+          bluetooth.connect(_device!).catchError((error) {
             setState(() => _connected = false);
           });
           setState(() => _connected = true);
         }
       });
+    } else {
+      show('No device selected.');
     }
   }
 
@@ -231,11 +229,6 @@ class _MyAppState extends State<MyApp> {
     setState(() => _connected = false);
   }
 
-//write to app path
-  Future<void> writeToFile(ByteData data, String path) {
-    final buffer = data.buffer;
-    return new File(path).writeAsBytes(buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
-  }
 
   Future show(
     String message, {
