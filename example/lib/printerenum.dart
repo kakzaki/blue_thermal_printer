@@ -1,5 +1,4 @@
-
-enum Size{
+enum Size {
   medium, //normal size text
   bold, //only bold text
   boldMedium, //bold with medium
@@ -7,7 +6,7 @@ enum Size{
   extraLarge //extra large
 }
 
-enum Align{
+enum Align {
   left, //ESC_ALIGN_LEFT
   center, //ESC_ALIGN_CENTER
   right, //ESC_ALIGN_RIGHT
@@ -46,4 +45,3 @@ extension PrintAlign on Align {
     }
   }
 }
-

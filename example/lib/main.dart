@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 
-
 void main() => runApp(new MyApp());
 
 class MyApp extends StatefulWidget {
@@ -18,7 +17,7 @@ class _MyAppState extends State<MyApp> {
   List<BluetoothDevice> _devices = [];
   BluetoothDevice? _device;
   bool _connected = false;
-  TestPrint testPrint=TestPrint();
+  TestPrint testPrint = TestPrint();
 
   @override
   void initState() {
@@ -26,15 +25,12 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-
   Future<void> initPlatformState() async {
     bool? isConnected = await bluetooth.isConnected;
     List<BluetoothDevice> devices = [];
     try {
       devices = await bluetooth.getBondedDevices();
-    } on PlatformException {
-
-    }
+    } on PlatformException {}
 
     bluetooth.onStateChanged().listen((state) {
       switch (state) {
@@ -97,7 +93,7 @@ class _MyAppState extends State<MyApp> {
       _devices = devices;
     });
 
-    if (isConnected==true) {
+    if (isConnected == true) {
       setState(() {
         _connected = true;
       });
@@ -135,7 +131,8 @@ class _MyAppState extends State<MyApp> {
                     Expanded(
                       child: DropdownButton(
                         items: _getDeviceItems(),
-                        onChanged: (BluetoothDevice? value) => setState(() => _device = value),
+                        onChanged: (BluetoothDevice? value) =>
+                            setState(() => _device = value),
                         value: _device,
                       ),
                     ),
@@ -201,7 +198,7 @@ class _MyAppState extends State<MyApp> {
     } else {
       _devices.forEach((device) {
         items.add(DropdownMenuItem(
-          child: Text(device.name??""),
+          child: Text(device.name ?? ""),
           value: device,
         ));
       });
@@ -212,7 +209,7 @@ class _MyAppState extends State<MyApp> {
   void _connect() {
     if (_device != null) {
       bluetooth.isConnected.then((isConnected) {
-        if (isConnected==true) {
+        if (isConnected == true) {
           bluetooth.connect(_device!).catchError((error) {
             setState(() => _connected = false);
           });
@@ -228,7 +225,6 @@ class _MyAppState extends State<MyApp> {
     bluetooth.disconnect();
     setState(() => _connected = false);
   }
-
 
   Future show(
     String message, {

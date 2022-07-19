@@ -11,22 +11,26 @@ class TestPrint {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
   sample() async {
-      //image max 300px X 300px
+    //image max 300px X 300px
 
-      ///image from File path
-      String filename = 'yourlogo.png';
-      ByteData bytesData = await rootBundle.load("assets/images/yourlogo.png");
-      String dir = (await getApplicationDocumentsDirectory()).path;
-      File file = await File('$dir/$filename').writeAsBytes(bytesData.buffer.asUint8List(bytesData.offsetInBytes, bytesData.lengthInBytes));
+    ///image from File path
+    String filename = 'yourlogo.png';
+    ByteData bytesData = await rootBundle.load("assets/images/yourlogo.png");
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    File file = await File('$dir/$filename').writeAsBytes(bytesData.buffer
+        .asUint8List(bytesData.offsetInBytes, bytesData.lengthInBytes));
 
-      ///image from Asset
-      ByteData bytesAsset = await rootBundle.load("assets/images/yourlogo.png");
-      Uint8List imageBytesFromAsset = bytesAsset.buffer.asUint8List(bytesAsset.offsetInBytes, bytesAsset.lengthInBytes);
+    ///image from Asset
+    ByteData bytesAsset = await rootBundle.load("assets/images/yourlogo.png");
+    Uint8List imageBytesFromAsset = bytesAsset.buffer
+        .asUint8List(bytesAsset.offsetInBytes, bytesAsset.lengthInBytes);
 
-      ///image from Network
-      var response = await http.get(Uri.parse("https://raw.githubusercontent.com/kakzaki/blue_thermal_printer/master/example/assets/images/yourlogo.png"));
-      Uint8List bytesNetwork = response.bodyBytes;
-      Uint8List imageBytesFromNetwork = bytesNetwork.buffer.asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes);
+    ///image from Network
+    var response = await http.get(Uri.parse(
+        "https://raw.githubusercontent.com/kakzaki/blue_thermal_printer/master/example/assets/images/yourlogo.png"));
+    Uint8List bytesNetwork = response.bodyBytes;
+    Uint8List imageBytesFromNetwork = bytesNetwork.buffer
+        .asUint8List(bytesNetwork.offsetInBytes, bytesNetwork.lengthInBytes);
 
     bluetooth.isConnected.then((isConnected) {
       if (isConnected == true) {
@@ -42,7 +46,8 @@ class TestPrint {
         bluetooth.printLeftRight("LEFT", "RIGHT", Size.medium.val);
         bluetooth.printLeftRight("LEFT", "RIGHT", Size.bold.val);
         bluetooth.printLeftRight("LEFT", "RIGHT", Size.bold.val,
-            format: "%-15s %15s %n"); //15 is number off character from left or right
+            format:
+                "%-15s %15s %n"); //15 is number off character from left or right
         bluetooth.printNewLine();
         bluetooth.printLeftRight("LEFT", "RIGHT", Size.boldMedium.val);
         bluetooth.printLeftRight("LEFT", "RIGHT", Size.boldLarge.val);
@@ -50,23 +55,28 @@ class TestPrint {
         bluetooth.printNewLine();
         bluetooth.print3Column("Col1", "Col2", "Col3", Size.bold.val);
         bluetooth.print3Column("Col1", "Col2", "Col3", Size.bold.val,
-            format: "%-10s %10s %10s %n"); //10 is number off character from left center and right
+            format:
+                "%-10s %10s %10s %n"); //10 is number off character from left center and right
         bluetooth.printNewLine();
         bluetooth.print4Column("Col1", "Col2", "Col3", "Col4", Size.bold.val);
         bluetooth.print4Column("Col1", "Col2", "Col3", "Col4", Size.bold.val,
             format: "%-8s %7s %7s %7s %n");
         bluetooth.printNewLine();
-        bluetooth.printCustom("čĆžŽšŠ-H-ščđ", Size.bold.val, Align.center.val, charset: "windows-1250");
-        bluetooth.printLeftRight("Številka:", "18000001", Size.bold.val,charset: "windows-1250");
+        bluetooth.printCustom("čĆžŽšŠ-H-ščđ", Size.bold.val, Align.center.val,
+            charset: "windows-1250");
+        bluetooth.printLeftRight("Številka:", "18000001", Size.bold.val,
+            charset: "windows-1250");
         bluetooth.printCustom("Body left", Size.bold.val, Align.left.val);
         bluetooth.printCustom("Body right", Size.medium.val, Align.right.val);
         bluetooth.printNewLine();
         bluetooth.printCustom("Thank You", Size.bold.val, Align.center.val);
         bluetooth.printNewLine();
-        bluetooth.printQRcode("Insert Your Own Text to Generate", 200, 200, Align.center.val); 
+        bluetooth.printQRcode(
+            "Insert Your Own Text to Generate", 200, 200, Align.center.val);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
-        bluetooth.paperCut(); //some printer not supported (sometime making image not centered)
+        bluetooth
+            .paperCut(); //some printer not supported (sometime making image not centered)
         //bluetooth.drawerPin2(); // or you can use bluetooth.drawerPin5();
       }
     });
