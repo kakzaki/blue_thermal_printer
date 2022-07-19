@@ -1,3 +1,8 @@
+## 1.2.3
+* demonstrate using enum for readability
+* drawer pin by erica
+* fix bug on ios
+
 ## 1.2.2
 * upgrading gradle
 
