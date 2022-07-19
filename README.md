@@ -36,7 +36,7 @@ Now in your Dart code, you can use:
 
 EXAMPLE:
 
-    For detail demonstration please look at [example](https://github.com/kakzaki/blue_thermal_printer/tree/master/example) folder
+For detail demonstration please look at [example](https://github.com/kakzaki/blue_thermal_printer/tree/master/example) folder
 
 
 Note: make sure to upgrade your project to compileSdkVersion 31 or above
