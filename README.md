@@ -2,7 +2,7 @@
 
 
 [![pub package](https://img.shields.io/pub/v/blue_thermal_printer.svg)](https://pub.dev/packages/blue_thermal_printer)
-[![pub package](https://img.shields.io/twitter/follow/FlutterComm.svg?colorA=1da1f2&colorB=&label=Follow%20on%20Twitter)](https://twitter.com/kakzaki_id)
+[![pub package](https://img.shields.io/twitter/follow/kakzaki.svg?colorA=1da1f2&colorB=&label=Follow%20on%20Twitter)](https://twitter.com/kakzaki_id)
 
 A new Flutter plugin for connecting to thermal printer via bluetooth
 (Android Only),
