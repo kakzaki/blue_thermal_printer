@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+
 
 void main() => runApp(new MyApp());
 
@@ -20,27 +20,14 @@ class _MyAppState extends State<MyApp> {
   BluetoothDevice _device;
   bool _connected = false;
   String pathImage;
-  TestPrint testPrint;
+  TestPrint testPrint=TestPrint();
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
-    initSavetoPath();
-    testPrint = TestPrint();
   }
 
-  initSavetoPath() async {
-    //read and write
-    //image max 300px X 300px
-    final filename = 'yourlogo.png';
-    var bytes = await rootBundle.load("assets/images/yourlogo.png");
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    writeToFile(bytes, '$dir/$filename');
-    setState(() {
-      pathImage = '$dir/$filename';
-    });
-  }
 
   Future<void> initPlatformState() async {
     bool isConnected = await bluetooth.isConnected;
@@ -193,7 +180,7 @@ class _MyAppState extends State<MyApp> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: Colors.brown),
                     onPressed: () {
-                      testPrint.sample(pathImage);
+                      testPrint.sample();
                     },
                     child: Text('PRINT TEST',
                         style: TextStyle(color: Colors.white)),
@@ -247,8 +234,7 @@ class _MyAppState extends State<MyApp> {
 //write to app path
   Future<void> writeToFile(ByteData data, String path) {
     final buffer = data.buffer;
-    return new File(path).writeAsBytes(
-        buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
+    return new File(path).writeAsBytes(buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 
   Future show(
