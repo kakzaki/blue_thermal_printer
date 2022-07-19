@@ -317,6 +317,14 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
         paperCut(result);
         break;
 
+      case "drawerPin2":
+        drawerPin2(result);
+        break;
+
+      case "drawerPin5":
+        drawerPin5(result);
+        break;
+
       case "printImage":
         if (arguments.containsKey("pathImage")) {
           String pathImage = (String) arguments.get("pathImage");
@@ -814,6 +822,34 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
     }
     try {
       THREAD.write(PrinterCommands.FEED_PAPER_AND_CUT);
+      result.success(true);
+    } catch (Exception ex) {
+      Log.e(TAG, ex.getMessage(), ex);
+      result.error("write_error", ex.getMessage(), exceptionToString(ex));
+    }
+  }
+
+  private void drawerPin2(Result result) {
+    if (THREAD == null) {
+      result.error("write_error", "not connected", null);
+      return;
+    }
+    try {
+      THREAD.write(PrinterCommands.ESC_DRAWER_PIN2);
+      result.success(true);
+    } catch (Exception ex) {
+      Log.e(TAG, ex.getMessage(), ex);
+      result.error("write_error", ex.getMessage(), exceptionToString(ex));
+    }
+  }
+
+  private void drawerPin5(Result result) {
+    if (THREAD == null) {
+      result.error("write_error", "not connected", null);
+      return;
+    }
+    try {
+      THREAD.write(PrinterCommands.ESC_DRAWER_PIN5);
       result.success(true);
     } catch (Exception ex) {
       Log.e(TAG, ex.getMessage(), ex);

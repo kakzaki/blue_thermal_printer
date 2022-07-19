@@ -63,10 +63,11 @@ class TestPrint {
         bluetooth.printNewLine();
         bluetooth.printCustom("Thank You", Size.bold.val, Align.center.val);
         bluetooth.printNewLine();
-        bluetooth.printQRcode("Insert Your Own Text to Generate", 200, 200, Align.center.val);
+        bluetooth.printQRcode("Insert Your Own Text to Generate", 200, 200, Align.center.val); 
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth.paperCut(); //some printer not supported (sometime making image not centered)
+        //bluetooth.drawerPin2(); // or you can use bluetooth.drawerPin5();
       }
     });
   }

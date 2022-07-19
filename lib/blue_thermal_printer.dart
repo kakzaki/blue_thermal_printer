@@ -105,6 +105,12 @@ class BlueThermalPrinter {
   ///paperCut()
   Future<dynamic> paperCut() => _channel.invokeMethod('paperCut');
 
+  ///drawerPin5()
+  Future<dynamic> drawerPin2() => _channel.invokeMethod('drawerPin2');
+
+  ///drawerPin5()
+  Future<dynamic> drawerPin5() => _channel.invokeMethod('drawerPin5');
+
   ///printImage(String pathImage)
   Future<dynamic> printImage(String pathImage) =>
       _channel.invokeMethod('printImage', {'pathImage': pathImage});
