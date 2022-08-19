@@ -51,7 +51,7 @@ For detail demonstration please look at [example](https://github.com/kakzaki/blu
 
 Note: make sure to upgrade your project to compileSdkVersion 31 or above
 
-
+<br />
 If you like my content, please consider buying me a coffee. Thank you for your support!
 
 <br />
