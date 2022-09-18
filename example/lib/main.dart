@@ -26,6 +26,19 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
+    // TODO here add a permission request using permission_handler
+    // if permission is not granted, kzaki's thermal print plugin will ask for location permission
+    // which will invariably crash the app even if user agrees so we'd better ask it upfront
+
+    // var statusLocation = Permission.location;
+    // if (await statusLocation.isGranted != true) {
+    //   await Permission.location.request();
+    // }
+    // if (await statusLocation.isGranted) {
+    // ...
+    // } else {
+    // showDialogSayingThatThisPermissionIsRequired());
+    // }
     bool? isConnected = await bluetooth.isConnected;
     List<BluetoothDevice> devices = [];
     try {
@@ -107,82 +120,72 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Blue Thermal Printer'),
         ),
-        body: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView(
-              children: <Widget>[
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 10,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView(
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Device:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(
-                      'Device:',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ),
+                  const SizedBox(width: 30),
+                  Expanded(
+                    child: DropdownButton(
+                      items: _getDeviceItems(),
+                      onChanged: (BluetoothDevice? value) =>
+                          setState(() => _device = value),
+                      value: _device,
                     ),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Expanded(
-                      child: DropdownButton(
-                        items: _getDeviceItems(),
-                        onChanged: (BluetoothDevice? value) =>
-                            setState(() => _device = value),
-                        value: _device,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.brown),
-                      onPressed: () {
-                        initPlatformState();
-                      },
-                      child: Text(
-                        'Refresh',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: _connected ? Colors.red : Colors.green),
-                      onPressed: _connected ? _disconnect : _connect,
-                      child: Text(
-                        _connected ? 'Disconnect' : 'Connect',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
-                  child: ElevatedButton(
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: Colors.brown),
                     onPressed: () {
-                      testPrint.sample();
+                      initPlatformState();
                     },
-                    child: Text('PRINT TEST',
-                        style: TextStyle(color: Colors.white)),
+                    child: const Text(
+                      'Refresh',
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
+                  const SizedBox(width: 20),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: _connected ? Colors.red : Colors.green),
+                    onPressed: _connected ? _disconnect : _connect,
+                    child: Text(
+                      _connected ? 'Disconnect' : 'Connect',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 10.0, right: 10.0, top: 50),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.brown),
+                  onPressed: () {
+                    testPrint.sample();
+                  },
+                  child: const Text('PRINT TEST',
+                      style: TextStyle(color: Colors.white)),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -209,7 +212,7 @@ class _MyAppState extends State<MyApp> {
   void _connect() {
     if (_device != null) {
       bluetooth.isConnected.then((isConnected) {
-        if (isConnected == true) {
+        if (isConnected == false) {
           bluetooth.connect(_device!).catchError((error) {
             setState(() => _connected = false);
           });
@@ -232,12 +235,10 @@ class _MyAppState extends State<MyApp> {
   }) async {
     await new Future.delayed(new Duration(milliseconds: 100));
     ScaffoldMessenger.of(context).showSnackBar(
-      new SnackBar(
-        content: new Text(
+      SnackBar(
+        content: Text(
           message,
-          style: new TextStyle(
-            color: Colors.white,
-          ),
+          style: const TextStyle(color: Colors.white),
         ),
         duration: duration,
       ),
