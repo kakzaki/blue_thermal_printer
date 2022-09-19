@@ -1,8 +1,16 @@
 #import "BlueThermalPrinterPlugin.h"
-#import <blue_thermal_printer/blue_thermal_printer-Swift.h>
+
+static NSString *const CHANNEL_NAME = @"plugins.kzaki.com/blue_thermal_printer";
+
 
 @implementation BlueThermalPrinterPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [SwiftBlueThermalPrinterPlugin registerWithRegistrar:registrar];
+    FlutterMethodChannel* channel = [FlutterMethodChannel
+                                     methodChannelWithName:CHANNEL_NAME
+                                     binaryMessenger:[registrar messenger]];
+    BlueThermalPrinterPlugin* instance = [[BlueThermalPrinterPlugin alloc] init];
+    [registrar addMethodCallDelegate:instance channel:channel];
 }
+
 @end
+
