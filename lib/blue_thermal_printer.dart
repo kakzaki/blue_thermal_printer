@@ -58,8 +58,11 @@ class BlueThermalPrinter {
 
   Future<bool?> get isOn async => await _channel.invokeMethod('isOn');
 
-  Future<bool?> get isConnected async =>
-      await _channel.invokeMethod('isConnected');
+  Future<bool> get isConnected async {
+    final res = await _channel.invokeMethod('isConnected');
+    if (res != null) return res;
+    return false;
+  }
 
   Future<bool?> get openSettings async =>
       await _channel.invokeMethod('openSettings');
