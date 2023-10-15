@@ -220,8 +220,9 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
         break;
 
       case "openSettings":
-        ContextCompat.startActivity(context, new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS),
-                null);
+        Intent intent = new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
         result.success(true);
         break;
 
