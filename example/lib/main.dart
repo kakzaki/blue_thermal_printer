@@ -30,9 +30,9 @@ class _MyAppState extends State<MyApp> {
     // if permission is not granted, kzaki's thermal print plugin will ask for location permission
     // which will invariably crash the app even if user agrees so we'd better ask it upfront
 
-    // var statusLocation = Permission.location;
+    // var statusLocation = Permission.locationWhenInUse;
     // if (await statusLocation.isGranted != true) {
-    //   await Permission.location.request();
+    //   await Permission.locationWhenInUse.request();
     // }
     // if (await statusLocation.isGranted) {
     // ...
