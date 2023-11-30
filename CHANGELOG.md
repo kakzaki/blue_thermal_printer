@@ -1,3 +1,8 @@
+## 1.3.0
+- no need for location permission
+- upgrade gradle
+- upgrade yaml depencies
+
 ## 1.2.3
 * demonstrate using enum for readability
 * drawer pin by erica
