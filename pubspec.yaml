@@ -7,7 +7,7 @@ issue_tracker: https://github.com/kakzaki/blue_thermal_printer/issues
 documentation: https://github.com/kakzaki/blue_thermal_printer/blob/master/README.md
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
   flutter: ">=1.10.0"
 
 dependencies:

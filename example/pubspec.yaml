@@ -3,16 +3,14 @@ description: Demonstrates how to use the blue_thermal_printer plugin.
 publish_to: https://pub.dev/packages/blue_thermal_printer
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  path_provider: ^2.0.11
-  http: ^0.13.1
+  path_provider: ^2.1.1 
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
