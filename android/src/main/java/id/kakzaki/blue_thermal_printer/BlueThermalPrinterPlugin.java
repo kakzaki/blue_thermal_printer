@@ -243,7 +243,6 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
                       Manifest.permission.BLUETOOTH_CONNECT,
                       // Manifest.permission.ACCESS_FINE_LOCATION,
               }, 1);
-
               pendingResult = result;
               break;
             }
