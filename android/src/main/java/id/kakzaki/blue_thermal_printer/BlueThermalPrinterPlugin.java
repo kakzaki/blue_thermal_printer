@@ -229,7 +229,6 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
         try {
 
           if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-
             if (ContextCompat.checkSelfPermission(activity,
                     Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED ||
                     ContextCompat.checkSelfPermission(activity,
@@ -249,7 +248,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
               break;
             }
           } 
-           else {
+          //  else {
           //   if (ContextCompat.checkSelfPermission(activity,
           //           Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(activity,
           //           Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -257,12 +256,11 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           //     ActivityCompat.requestPermissions(activity,
           //             new String[] { Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION }, REQUEST_COARSE_LOCATION_PERMISSIONS);
 
-               pendingResult = result;
-               break;
-             }
-           }
+              //  pendingResult = result;
+              //  break;
+            //  }
+          //  }
           getBondedDevices(result);
-
         } catch (Exception ex) {
           result.error("Error", ex.getMessage(), exceptionToString(ex));
         }
@@ -410,7 +408,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
    */
   @Override
   public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    getBondedDevices(pendingResult);
+    // getBondedDevices(pendingResult);
     return true;
     // if (requestCode == REQUEST_COARSE_LOCATION_PERMISSIONS) {
     //   if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
