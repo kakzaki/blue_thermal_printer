@@ -30,7 +30,9 @@ class _MyAppState extends State<MyApp> {
     List<BluetoothDevice> devices = [];
     try {
       devices = await bluetooth.getBondedDevices();
-    } on PlatformException {}
+    } on PlatformException {
+      print("get bonded devices fail");
+    }
 
     bluetooth.onStateChanged().listen((state) {
       switch (state) {
