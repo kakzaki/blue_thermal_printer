@@ -1,13 +1,13 @@
 name: blue_thermal_printer
 description: A Flutter plugin for connecting to thermal printer via bluetooth
-version: 1.2.3
+version: 1.3.0
 homepage: https://kakzaki.dev
 repository: https://github.com/kakzaki/blue_thermal_printer
 issue_tracker: https://github.com/kakzaki/blue_thermal_printer/issues
 documentation: https://github.com/kakzaki/blue_thermal_printer/blob/master/README.md
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
   flutter: ">=1.10.0"
 
 dependencies:

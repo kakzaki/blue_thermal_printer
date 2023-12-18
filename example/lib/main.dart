@@ -26,24 +26,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> initPlatformState() async {
-    // TODO here add a permission request using permission_handler
-    // if permission is not granted, kzaki's thermal print plugin will ask for location permission
-    // which will invariably crash the app even if user agrees so we'd better ask it upfront
-
-    // var statusLocation = Permission.location;
-    // if (await statusLocation.isGranted != true) {
-    //   await Permission.location.request();
-    // }
-    // if (await statusLocation.isGranted) {
-    // ...
-    // } else {
-    // showDialogSayingThatThisPermissionIsRequired());
-    // }
     bool? isConnected = await bluetooth.isConnected;
     List<BluetoothDevice> devices = [];
     try {
       devices = await bluetooth.getBondedDevices();
-    } on PlatformException {}
+    } on PlatformException {
+      print("get bonded devices fail");
+    }
 
     bluetooth.onStateChanged().listen((state) {
       switch (state) {
