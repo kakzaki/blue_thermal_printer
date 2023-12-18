@@ -249,7 +249,7 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
               break;
             }
           } 
-          // else {
+           else {
           //   if (ContextCompat.checkSelfPermission(activity,
           //           Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(activity,
           //           Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -257,10 +257,10 @@ public class BlueThermalPrinterPlugin implements FlutterPlugin, ActivityAware,Me
           //     ActivityCompat.requestPermissions(activity,
           //             new String[] { Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION }, REQUEST_COARSE_LOCATION_PERMISSIONS);
 
-          //     pendingResult = result;
-          //     break;
-          //   }
-          // }
+               pendingResult = result;
+               break;
+             }
+           }
           getBondedDevices(result);
 
         } catch (Exception ex) {
