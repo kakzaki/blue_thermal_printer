@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'enums/enums_export.dart';
 
 import 'package:flutter/services.dart';
 
@@ -90,12 +91,12 @@ class BlueThermalPrinter {
       _channel.invokeMethod('writeBytes', {'message': message});
 
   ///printCustom(String message, int size, int align,{String? charset})
-  Future<dynamic> printCustom(String message, int size, int align,
+  Future<dynamic> printCustom(String message, Size size, Align align,
           {String? charset}) =>
       _channel.invokeMethod('printCustom', {
         'message': message,
-        'size': size,
-        'align': align,
+        'size': size.value,
+        'align': align.value,
         'charset': charset
       });
 
@@ -130,39 +131,39 @@ class BlueThermalPrinter {
       });
 
   ///printLeftRight(String string1, String string2, int size,{String? charset, String? format})
-  Future<dynamic> printLeftRight(String string1, String string2, int size,
+  Future<dynamic> printLeftRight(String string1, String string2, Size size,
           {String? charset, String? format}) =>
       _channel.invokeMethod('printLeftRight', {
         'string1': string1,
         'string2': string2,
-        'size': size,
+        'size': size.value,
         'charset': charset,
         'format': format
       });
 
   ///print3Column(String string1, String string2, String string3, int size,{String? charset, String? format})
   Future<dynamic> print3Column(
-          String string1, String string2, String string3, int size,
+          String string1, String string2, String string3, Size size,
           {String? charset, String? format}) =>
       _channel.invokeMethod('print3Column', {
         'string1': string1,
         'string2': string2,
         'string3': string3,
-        'size': size,
+        'size': size.value,
         'charset': charset,
         'format': format
       });
 
   ///print4Column(String string1, String string2, String string3,String string4, int size,{String? charset, String? format})
   Future<dynamic> print4Column(String string1, String string2, String string3,
-          String string4, int size,
+          String string4, Size size,
           {String? charset, String? format}) =>
       _channel.invokeMethod('print4Column', {
         'string1': string1,
         'string2': string2,
         'string3': string3,
         'string4': string4,
-        'size': size,
+        'size': size.value,
         'charset': charset,
         'format': format
       });

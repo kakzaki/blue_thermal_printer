@@ -3,6 +3,7 @@ import 'package:blue_thermal_printer_example/printerenum.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:blue_thermal_printer/enums/enums_export.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 
@@ -35,7 +36,7 @@ class TestPrint {
     bluetooth.isConnected.then((isConnected) {
       if (isConnected == true) {
         bluetooth.printNewLine();
-        bluetooth.printCustom("HEADER", Size.boldMedium.val, Align.center.val);
+        bluetooth.printCustom("HEADER", Size.boldMedium, Align.center);
         bluetooth.printNewLine();
         bluetooth.printImage(file.path); //path of your image/logo
         bluetooth.printNewLine();
@@ -43,36 +44,36 @@ class TestPrint {
         bluetooth.printNewLine();
         bluetooth.printImageBytes(imageBytesFromNetwork); //image from Network
         bluetooth.printNewLine();
-        bluetooth.printLeftRight("LEFT", "RIGHT", Size.medium.val);
-        bluetooth.printLeftRight("LEFT", "RIGHT", Size.bold.val);
-        bluetooth.printLeftRight("LEFT", "RIGHT", Size.bold.val,
+        bluetooth.printLeftRight("LEFT", "RIGHT", Size.medium);
+        bluetooth.printLeftRight("LEFT", "RIGHT", Size.bold);
+        bluetooth.printLeftRight("LEFT", "RIGHT", Size.bold,
             format:
                 "%-15s %15s %n"); //15 is number off character from left or right
         bluetooth.printNewLine();
-        bluetooth.printLeftRight("LEFT", "RIGHT", Size.boldMedium.val);
-        bluetooth.printLeftRight("LEFT", "RIGHT", Size.boldLarge.val);
-        bluetooth.printLeftRight("LEFT", "RIGHT", Size.extraLarge.val);
+        bluetooth.printLeftRight("LEFT", "RIGHT", Size.boldMedium);
+        bluetooth.printLeftRight("LEFT", "RIGHT", Size.boldLarge);
+        bluetooth.printLeftRight("LEFT", "RIGHT", Size.extraLarge);
         bluetooth.printNewLine();
-        bluetooth.print3Column("Col1", "Col2", "Col3", Size.bold.val);
-        bluetooth.print3Column("Col1", "Col2", "Col3", Size.bold.val,
+        bluetooth.print3Column("Col1", "Col2", "Col3", Size.bold);
+        bluetooth.print3Column("Col1", "Col2", "Col3", Size.bold,
             format:
                 "%-10s %10s %10s %n"); //10 is number off character from left center and right
         bluetooth.printNewLine();
-        bluetooth.print4Column("Col1", "Col2", "Col3", "Col4", Size.bold.val);
-        bluetooth.print4Column("Col1", "Col2", "Col3", "Col4", Size.bold.val,
+        bluetooth.print4Column("Col1", "Col2", "Col3", "Col4", Size.bold);
+        bluetooth.print4Column("Col1", "Col2", "Col3", "Col4", Size.bold,
             format: "%-8s %7s %7s %7s %n");
         bluetooth.printNewLine();
-        bluetooth.printCustom("čĆžŽšŠ-H-ščđ", Size.bold.val, Align.center.val,
+        bluetooth.printCustom("čĆžŽšŠ-H-ščđ", Size.bold, Align.center,
             charset: "windows-1250");
-        bluetooth.printLeftRight("Številka:", "18000001", Size.bold.val,
+        bluetooth.printLeftRight("Številka:", "18000001", Size.bold,
             charset: "windows-1250");
-        bluetooth.printCustom("Body left", Size.bold.val, Align.left.val);
-        bluetooth.printCustom("Body right", Size.medium.val, Align.right.val);
+        bluetooth.printCustom("Body left", Size.bold, Align.left);
+        bluetooth.printCustom("Body right", Size.medium, Align.right);
         bluetooth.printNewLine();
-        bluetooth.printCustom("Thank You", Size.bold.val, Align.center.val);
+        bluetooth.printCustom("Thank You", Size.bold, Align.center);
         bluetooth.printNewLine();
         bluetooth.printQRcode(
-            "Insert Your Own Text to Generate", 200, 200, Align.center.val);
+            "Insert Your Own Text to Generate", 200, 200, Align.center);
         bluetooth.printNewLine();
         bluetooth.printNewLine();
         bluetooth
