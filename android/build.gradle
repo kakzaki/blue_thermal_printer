@@ -2,6 +2,8 @@ group 'id.kakzaki.blue_thermal_printer'
 
 
 buildscript {
+    ext.kotlin_version = '1.5.20'
+    
     repositories {
         google()
         mavenCentral()
@@ -9,6 +11,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.4'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
