@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:blue_thermal_printer_example/printerenum.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -10,7 +9,7 @@ import 'package:http/http.dart' as http;
 class TestPrint {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
-  sample() async {
+  Future<void> sample() async {
     //image max 300px X 300px
 
     ///image from File path
