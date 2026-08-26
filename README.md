@@ -27,5 +27,5 @@ Add this to your package's `pubspec.yaml` file:
 dependencies:
   blue_thermal_printer:
     git:
-      url: [https://github.com/hudy-79/blue_thermal_printer.git](https://github.com/hudy-79/blue_thermal_printer.git)
+      url: https://github.com/hudy-79/blue_thermal_printer.git
       ref: master
