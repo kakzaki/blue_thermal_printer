@@ -1,43 +1,28 @@
-group 'id.kakzaki.blue_thermal_printer'
-
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.4'
-    }
+plugins {
+    id 'com.android.library'
 }
-
-rootProject.allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+    namespace 'id.kakzaki.blue_thermal_printer'
+    compileSdk 35
+
     defaultConfig {
-        minSdkVersion 18
+        minSdk 21
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    lintOptions {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
         disable 'InvalidPackage'
     }
 }
+
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.zxing:core:3.3.3'
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.journeyapps:zxing-android-embedded:3.6.0@aar'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.zxing:core:3.5.3'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 }

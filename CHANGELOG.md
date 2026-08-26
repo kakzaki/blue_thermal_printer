@@ -1,3 +1,12 @@
+## 1.3.4
+* Upgrade Android Gradle Plugin (AGP) version to `8.11.1` and Gradle Wrapper to `9.1.0`.
+* Upgrade Kotlin version to `2.2.20` and set Java/JVM compatibility target to `17`.
+* Update `compileSdk` and `targetSdk` to `35`, and set `ndkVersion` to `28.2.13676358` for modern Android SDK & NDK compatibility.
+* Migrate project to Flutter's Built-in Kotlin support by removing manual Kotlin Gradle Plugin (`org.jetbrains.kotlin.android`) applications.
+* Remove legacy `multidex` dependency (`androidx.multidex:multidex`) as `minSdk` is set to 21.
+* Fix build queue locking issues and Kotlin compiler DSL configuration for Gradle 8+/9+ compatibility.
+
+
 ## 1.2.3
 * demonstrate using enum for readability
 * drawer pin by erica
